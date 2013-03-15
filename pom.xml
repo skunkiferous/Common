@@ -12,7 +12,28 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>Common</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
+	<packaging>bundle</packaging>
+	<name>Common</name>
+	<description>Common functionality, shared by most on BlockWithMe projects.</description>
+	<organization>
+		<name>Sebastien Diot</name>
+	</organization>
+	<url>https://github.com/skunkiferous/Common</url>
+
+    <scm>
+        <connection>scm:git:git@github.com:skunkiferous/Common.git</connection>
+        <developerConnection>scm:git:git@github.com:skunkiferous/Common.git</developerConnection>
+        <url>git@github.com:skunkiferous/Common.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>skunkiferous</id>
+            <name>Sebastien Diot</name>
+            <email>s.diot@eurodata.de</email>
+        </developer>
+    </developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -73,6 +94,7 @@
 			</resource>
 		</resources>
 	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.junit</groupId>
@@ -80,15 +102,7 @@
 			<version>4.10.0</version>
 		</dependency>
 	</dependencies>
-	<name>Common</name>
-	<description>Common functionality, shared by most on BlockWithMe projects.</description>
-	<organization>
-		<name>Sebastien Diot</name>
-	</organization>
-	<scm>
-		<url>https://github.com/skunkiferous/Common</url>
-	</scm>
-	<url>https://github.com/skunkiferous/Common</url>
+
 	<repositories>
 		<repository>
 			<id>blockwithme-mvn-repo</id>
