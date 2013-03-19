@@ -20,14 +20,15 @@ package com.blockwithme.prim;
  * <code>ShortConverter</code> implements the conversion of some object type,
  * to and from Java primitive short values.
  */
-public interface ShortConverter<E> {
-	/**
-	 * Converts from object instance.
-	 *
-	 * The expected behavior when receiving null is left on purpose unspecified,
-	 * as it depends on your application needs.
-	 */
-	short fromObject(E obj);
-	/** Converts to an object instance. */
-	E toObject(short value);
+public interface ShortConverter<E> extends Converter<E> {
+    /**
+     * Converts from object instance.
+     *
+     * The expected behavior when receiving null is left on purpose unspecified,
+     * as it depends on your application needs.
+     */
+    short fromObject(final E obj);
+
+    /** Converts to an object instance. */
+    E toObject(final short value);
 }

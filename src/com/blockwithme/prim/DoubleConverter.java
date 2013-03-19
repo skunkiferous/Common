@@ -20,14 +20,15 @@ package com.blockwithme.prim;
  * <code>DoubleConverter</code> implements the conversion of some object type,
  * to and from Java primitive double values.
  */
-public interface DoubleConverter<E> {
-	/**
-	 * Converts from object instance.
-	 *
-	 * The expected behavior when receiving null is left on purpose unspecified,
-	 * as it depends on your application needs.
-	 */
-	double fromObject(E obj);
-	/** Converts to an object instance. */
-	E toObject(double value);
+public interface DoubleConverter<E> extends Converter<E> {
+    /**
+     * Converts from object instance.
+     *
+     * The expected behavior when receiving null is left on purpose unspecified,
+     * as it depends on your application needs.
+     */
+    double fromObject(final E obj);
+
+    /** Converts to an object instance. */
+    E toObject(final double value);
 }

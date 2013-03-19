@@ -27,96 +27,104 @@ import com.blockwithme.util.RegistryImpl;
  */
 public class ConverterRegistry {
 
-	/** The ConverterRegistry provider. */
-	private static final Provider<ConverterRegistry> PROVIDER
-		= ProviderFactory.providerFor(ConverterRegistry.class, ConverterRegistry.class);
+    /** The ConverterRegistry provider. */
+    private static final Provider<ConverterRegistry> PROVIDER = ProviderFactory
+            .providerFor(ConverterRegistry.class, ConverterRegistry.class);
 
-	/** Returns the global registry. */
-	public static final ConverterRegistry instance() {
-		return PROVIDER.get();
-	}
+    /** Registered converters. */
+    private final RegistryImpl<Class<?>, Object> registry;
 
-	/** Registered converters. */
-	private final RegistryImpl<Class<?>, Object> registry;
+    /** Returns the global registry. */
+    public static final ConverterRegistry instance() {
+        return PROVIDER.get();
+    }
 
-	/** Constructor, with optional parent. */
-	public ConverterRegistry(final ConverterRegistry optionalParent) {
-		final RegistryImpl<Class<?>, Object> parent = (optionalParent == null) ?
-				null : optionalParent.registry;
-		registry = new RegistryImpl<Class<?>, Object>(parent);
-	}
+    /** Creates a new ConverterRegistry, without a parent. */
+    public ConverterRegistry() {
+        registry = new RegistryImpl<>(null);
+    }
 
-	/** Creates a new ConverterRegistry, without a parent. */
-	public ConverterRegistry() {
-		registry = new RegistryImpl<Class<?>, Object>(null);
-	}
+    /** Constructor, with optional parent. */
+    public ConverterRegistry(final ConverterRegistry optionalParent) {
+        final RegistryImpl<Class<?>, Object> parent = optionalParent == null ? null
+                : optionalParent.registry;
+        registry = new RegistryImpl<>(parent);
+    }
 
-	/** Returns a registered converter, if any. */
-	public Object find(final Class<?> type) {
-		return registry.find(type);
-	}
+    /** Returns a registered converter, if any. */
+    public Object find(final Class<?> type) {
+        return registry.find(type);
+    }
 
-	/**
-	 * Registers a boolean converter. Returns the old converter.
-	 * The result is untyped, because the previous converter might have been to another type.
-	 */
-	public <E> Object register(final BooleanConverter<E> converter, final Class<E> type) {
-		return registry.register(type, converter, true);
-	}
+    /**
+     * Registers a boolean converter. Returns the old converter.
+     * The result is untyped, because the previous converter might have been to another type.
+     */
+    public <E> Object register(final BooleanConverter<E> converter,
+            final Class<E> type) {
+        return registry.register(type, converter, true);
+    }
 
-	/**
-	 * Registers a byte converter. Returns the old converter.
-	 * The result is untyped, because the previous converter might have been to another type.
-	 */
-	public <E> Object register(final ByteConverter<E> converter, final Class<E> type) {
-		return registry.register(type, converter, true);
-	}
+    /**
+     * Registers a byte converter. Returns the old converter.
+     * The result is untyped, because the previous converter might have been to another type.
+     */
+    public <E> Object register(final ByteConverter<E> converter,
+            final Class<E> type) {
+        return registry.register(type, converter, true);
+    }
 
-	/**
-	 * Registers a char converter. Returns the old converter.
-	 * The result is untyped, because the previous converter might have been to another type.
-	 */
-	public <E> Object register(final CharConverter<E> converter, final Class<E> type) {
-		return registry.register(type, converter, true);
-	}
+    /**
+     * Registers a char converter. Returns the old converter.
+     * The result is untyped, because the previous converter might have been to another type.
+     */
+    public <E> Object register(final CharConverter<E> converter,
+            final Class<E> type) {
+        return registry.register(type, converter, true);
+    }
 
-	/**
-	 * Registers a short converter. Returns the old converter.
-	 * The result is untyped, because the previous converter might have been to another type.
-	 */
-	public <E> Object register(final ShortConverter<E> converter, final Class<E> type) {
-		return registry.register(type, converter, true);
-	}
+    /**
+     * Registers a double converter. Returns the old converter.
+     * The result is untyped, because the previous converter might have been to another type.
+     */
+    public <E> Object register(final DoubleConverter<E> converter,
+            final Class<E> type) {
+        return registry.register(type, converter, true);
+    }
 
-	/**
-	 * Registers a int converter. Returns the old converter.
-	 * The result is untyped, because the previous converter might have been to another type.
-	 */
-	public <E> Object register(final IntConverter<E> converter, final Class<E> type) {
-		return registry.register(type, converter, true);
-	}
+    /**
+     * Registers a float converter. Returns the old converter.
+     * The result is untyped, because the previous converter might have been to another type.
+     */
+    public <E> Object register(final FloatConverter<E> converter,
+            final Class<E> type) {
+        return registry.register(type, converter, true);
+    }
 
-	/**
-	 * Registers a long converter. Returns the old converter.
-	 * The result is untyped, because the previous converter might have been to another type.
-	 */
-	public <E> Object register(final LongConverter<E> converter, final Class<E> type) {
-		return registry.register(type, converter, true);
-	}
+    /**
+     * Registers a int converter. Returns the old converter.
+     * The result is untyped, because the previous converter might have been to another type.
+     */
+    public <E> Object register(final IntConverter<E> converter,
+            final Class<E> type) {
+        return registry.register(type, converter, true);
+    }
 
-	/**
-	 * Registers a float converter. Returns the old converter.
-	 * The result is untyped, because the previous converter might have been to another type.
-	 */
-	public <E> Object register(final FloatConverter<E> converter, final Class<E> type) {
-		return registry.register(type, converter, true);
-	}
+    /**
+     * Registers a long converter. Returns the old converter.
+     * The result is untyped, because the previous converter might have been to another type.
+     */
+    public <E> Object register(final LongConverter<E> converter,
+            final Class<E> type) {
+        return registry.register(type, converter, true);
+    }
 
-	/**
-	 * Registers a double converter. Returns the old converter.
-	 * The result is untyped, because the previous converter might have been to another type.
-	 */
-	public <E> Object register(final DoubleConverter<E> converter, final Class<E> type) {
-		return registry.register(type, converter, true);
-	}
+    /**
+     * Registers a short converter. Returns the old converter.
+     * The result is untyped, because the previous converter might have been to another type.
+     */
+    public <E> Object register(final ShortConverter<E> converter,
+            final Class<E> type) {
+        return registry.register(type, converter, true);
+    }
 }

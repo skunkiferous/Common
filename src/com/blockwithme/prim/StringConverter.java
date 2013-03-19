@@ -23,14 +23,15 @@ package com.blockwithme.prim;
  * OK, String is not a primitive type, but it's still one that is normally
  * supported in most serialization APIs.
  */
-public interface StringConverter<E> {
-	/**
-	 * Converts from object instance.
-	 *
-	 * The expected behavior when receiving null is left on purpose unspecified,
-	 * as it depends on your application needs.
-	 */
-	String fromObject(E obj);
-	/** Converts to an object instance. */
-	E toObject(String value);
+public interface StringConverter<E> extends Converter<E> {
+    /**
+     * Converts from object instance.
+     *
+     * The expected behavior when receiving null is left on purpose unspecified,
+     * as it depends on your application needs.
+     */
+    String fromObject(final E obj);
+
+    /** Converts to an object instance. */
+    E toObject(final String value);
 }

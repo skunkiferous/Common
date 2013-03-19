@@ -20,14 +20,15 @@ package com.blockwithme.prim;
  * <code>CharConverter</code> implements the conversion of some object type,
  * to and from Java primitive char values.
  */
-public interface CharConverter<E> {
-	/**
-	 * Converts from object instance.
-	 *
-	 * The expected behavior when receiving null is left on purpose unspecified,
-	 * as it depends on your application needs.
-	 */
-	char fromObject(E obj);
-	/** Converts to an object instance. */
-	E toObject(char value);
+public interface CharConverter<E> extends Converter<E> {
+    /**
+     * Converts from object instance.
+     *
+     * The expected behavior when receiving null is left on purpose unspecified,
+     * as it depends on your application needs.
+     */
+    char fromObject(final E obj);
+
+    /** Converts to an object instance. */
+    E toObject(final char value);
 }

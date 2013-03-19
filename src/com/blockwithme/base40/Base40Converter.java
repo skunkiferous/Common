@@ -31,11 +31,17 @@ public class Base40Converter implements LongConverter<Base40> {
 
     @Override
     public long fromObject(final Base40 obj) {
-        return (obj == null) ? 0L : obj.asLong();
+        return obj == null ? 0L : obj.asLong();
     }
 
     @Override
     public Base40 toObject(final long value) {
         return new Base40(value);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Class<Base40> type() {
+        return Base40.class;
     }
 }

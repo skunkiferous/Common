@@ -20,14 +20,15 @@ package com.blockwithme.prim;
  * <code>IntConverter</code> implements the conversion of some object type,
  * to and from Java primitive int values.
  */
-public interface IntConverter<E> {
-	/**
-	 * Converts from object instance.
-	 *
-	 * The expected behavior when receiving null is left on purpose unspecified,
-	 * as it depends on your application needs.
-	 */
-	int fromObject(E obj);
-	/** Converts to an object instance. */
-	E toObject(int value);
+public interface IntConverter<E> extends Converter<E> {
+    /**
+     * Converts from object instance.
+     *
+     * The expected behavior when receiving null is left on purpose unspecified,
+     * as it depends on your application needs.
+     */
+    int fromObject(final E obj);
+
+    /** Converts to an object instance. */
+    E toObject(final int value);
 }

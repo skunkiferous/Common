@@ -20,14 +20,15 @@ package com.blockwithme.prim;
  * <code>ByteConverter</code> implements the conversion of some object type,
  * to and from Java primitive byte values.
  */
-public interface ByteConverter<E> {
-	/**
-	 * Converts from object instance.
-	 *
-	 * The expected behavior when receiving null is left on purpose unspecified,
-	 * as it depends on your application needs.
-	 */
-	byte fromObject(E obj);
-	/** Converts to an object instance. */
-	E toObject(byte value);
+public interface ByteConverter<E> extends Converter<E> {
+    /**
+     * Converts from object instance.
+     *
+     * The expected behavior when receiving null is left on purpose unspecified,
+     * as it depends on your application needs.
+     */
+    byte fromObject(final E obj);
+
+    /** Converts to an object instance. */
+    E toObject(final byte value);
 }
