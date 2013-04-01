@@ -20,7 +20,7 @@ package com.blockwithme.prim;
  * <code>CharConverter</code> implements the conversion of some object type,
  * to and from Java primitive char values.
  */
-public interface CharConverter<E> {
+public interface CharConverter<E> extends Converter<E> {
     /**
      * Converts from object instance.
      *

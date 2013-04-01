@@ -20,7 +20,7 @@ package com.blockwithme.prim;
  * <code>BooleanConverter</code> implements the conversion of some object type,
  * to and from Java primitive boolean values.
  */
-public interface BooleanConverter<E> {
+public interface BooleanConverter<E> extends Converter<E> {
     /**
      * Converts from object instance.
      *

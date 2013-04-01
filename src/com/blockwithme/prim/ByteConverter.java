@@ -20,7 +20,7 @@ package com.blockwithme.prim;
  * <code>ByteConverter</code> implements the conversion of some object type,
  * to and from Java primitive byte values.
  */
-public interface ByteConverter<E> {
+public interface ByteConverter<E> extends Converter<E> {
     /**
      * Converts from object instance.
      *

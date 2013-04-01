@@ -20,7 +20,7 @@ package com.blockwithme.prim;
  * <code>DoubleConverter</code> implements the conversion of some object type,
  * to and from Java primitive double values.
  */
-public interface DoubleConverter<E> {
+public interface DoubleConverter<E> extends Converter<E> {
     /**
      * Converts from object instance.
      *

@@ -20,7 +20,7 @@ package com.blockwithme.prim;
  * <code>ShortConverter</code> implements the conversion of some object type,
  * to and from Java primitive short values.
  */
-public interface ShortConverter<E> {
+public interface ShortConverter<E> extends Converter<E> {
     /**
      * Converts from object instance.
      *

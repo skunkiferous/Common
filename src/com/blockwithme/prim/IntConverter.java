@@ -20,7 +20,7 @@ package com.blockwithme.prim;
  * <code>IntConverter</code> implements the conversion of some object type,
  * to and from Java primitive int values.
  */
-public interface IntConverter<E> {
+public interface IntConverter<E> extends Converter<E> {
     /**
      * Converts from object instance.
      *

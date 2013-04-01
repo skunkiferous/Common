@@ -23,7 +23,7 @@ package com.blockwithme.prim;
  * OK, String is not a primitive type, but it's still one that is normally
  * supported in most serialization APIs.
  */
-public interface StringConverter<E> {
+public interface StringConverter<E> extends Converter<E> {
     /**
      * Converts from object instance.
      *

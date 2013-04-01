@@ -35,16 +35,16 @@ public class ConverterRegistry {
     /** Registered converters. */
     private final RegistryImpl<Class<?>, Object> registry;
 
-    /** Constructor, with optional parent. */
-    public ConverterRegistry(final ConverterRegistry optionalParent) {
-        final RegistryImpl<Class<?>, Object> parent = (optionalParent == null) ? null
-                : optionalParent.registry;
-        registry = new RegistryImpl<Class<?>, Object>(parent);
-    }
-
     /** Creates a new ConverterRegistry, without a parent. */
     public ConverterRegistry() {
-        registry = new RegistryImpl<Class<?>, Object>(null);
+        registry = new RegistryImpl<>(null);
+    }
+
+    /** Constructor, with optional parent. */
+    public ConverterRegistry(final ConverterRegistry optionalParent) {
+        final RegistryImpl<Class<?>, Object> parent = optionalParent == null ? null
+                : optionalParent.registry;
+        registry = new RegistryImpl<>(parent);
     }
 
     /** Returns a registered converter, if any. */

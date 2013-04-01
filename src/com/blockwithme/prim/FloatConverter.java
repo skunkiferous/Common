@@ -20,7 +20,7 @@ package com.blockwithme.prim;
  * <code>FloatConverter</code> implements the conversion of some object type,
  * to and from Java primitive float values.
  */
-public interface FloatConverter<E> {
+public interface FloatConverter<E> extends Converter<E> {
     /**
      * Converts from object instance.
      *
