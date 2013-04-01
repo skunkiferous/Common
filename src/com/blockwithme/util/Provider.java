@@ -16,8 +16,8 @@
 
 package com.blockwithme.util;
 
-/** Returns some instance. Used by MiniDI. */
+/** Returns some instance. Used by ProviderFactory. */
 public interface Provider<E> {
-	/** Returns some instance. Used by MiniDI. */
-	E get();
+    /** Returns some instance. Used by MiniDI. */
+    E get();
 }

@@ -23,6 +23,19 @@ import com.blockwithme.prim.LongConverter;
  */
 public class Base40Converter implements LongConverter<Base40> {
 
+    /** The character set. */
+    private final CharacterSet characterSet;
+
+    /** Creates a Base40Converter with the given Base40 CharacterSet. */
+    public Base40Converter(final CharacterSet theCharacterSet) {
+        characterSet = theCharacterSet;
+    }
+
+    /** Creates a Base40Converter with the Base40 default CharacterSet. */
+    public Base40Converter() {
+        this(Base40.getDefaultCharacterSet());
+    }
+
     /** Registers this converter globally. */
     public static void register() {
         ConverterRegistry.instance().register(new Base40Converter(),
@@ -36,6 +49,6 @@ public class Base40Converter implements LongConverter<Base40> {
 
     @Override
     public Base40 toObject(final long value) {
-        return new Base40(value);
+        return new Base40(characterSet, value);
     }
 }

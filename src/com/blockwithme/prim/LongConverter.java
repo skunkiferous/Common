@@ -21,13 +21,14 @@ package com.blockwithme.prim;
  * to and from Java primitive long values.
  */
 public interface LongConverter<E> {
-	/**
-	 * Converts from object instance.
-	 *
-	 * The expected behavior when receiving null is left on purpose unspecified,
-	 * as it depends on your application needs.
-	 */
-	long fromObject(E obj);
-	/** Converts to an object instance. */
-	E toObject(long value);
+    /**
+     * Converts from object instance.
+     *
+     * The expected behavior when receiving null is left on purpose unspecified,
+     * as it depends on your application needs.
+     */
+    long fromObject(final E obj);
+
+    /** Converts to an object instance. */
+    E toObject(final long value);
 }

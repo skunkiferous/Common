@@ -21,13 +21,14 @@ package com.blockwithme.prim;
  * to and from Java primitive boolean values.
  */
 public interface BooleanConverter<E> {
-	/**
-	 * Converts from object instance.
-	 *
-	 * The expected behavior when receiving null is left on purpose unspecified,
-	 * as it depends on your application needs.
-	 */
-	boolean fromObject(E obj);
-	/** Converts to an object instance. */
-	E toObject(boolean value);
+    /**
+     * Converts from object instance.
+     *
+     * The expected behavior when receiving null is left on purpose unspecified,
+     * as it depends on your application needs.
+     */
+    boolean fromObject(final E obj);
+
+    /** Converts to an object instance. */
+    E toObject(final boolean value);
 }

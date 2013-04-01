@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.blockwithme.util.Statics;
+
 /**
  * Helper class allows creating pseudo-enumerations out of Enum40 instances.
  *
@@ -161,9 +163,6 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
     /** Maximum number of children per Enum40. */
     private static final int MAX_CHILDREN = ((1 + Character.MAX_VALUE) / (1 + MAX_VALUES)) - 1;
 
-    /** The logger. */
-    private static final Logger LOG = Logger.getLogger(Enum40.class.getName());
-
     /** Keeps track of which enum value will be returned next. */
     private static class Data<E extends Enum40<E>> {
         /** The enum class. */
@@ -194,7 +193,8 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
             enumClass = theEnumClass;
             parent = theParent;
             firstID = theFirstID;
-            LOG.info("Registering new Enum40 enum: " + enumClass);
+            final Logger log = Logger.getLogger(Enum40.class.getName());
+            log.info("Registering new Enum40 enum: " + enumClass);
             for (final Field f : enumClass.getFields()) {
                 final int mod = f.getModifiers();
                 if (Modifier.isPublic(mod) && Modifier.isStatic(mod)
@@ -211,7 +211,7 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
                 throw new IllegalStateException("Too many values found in "
                         + theEnumClass + " : " + fields.size());
             }
-            LOG.info("Enum40 fields for " + enumClass + " " + fields);
+            log.info("Enum40 fields for " + enumClass + " " + fields);
         }
 
         public E[] toArray() {
@@ -222,11 +222,8 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
         }
     }
 
-    /** Already computed Data for classes. */
-    private static final Map<Class<?>, Data<?>> DATA = new HashMap<>();
-
-    /** The last finished enum, which still needs it's last value checked. */
-    private static Data<?> toCheck;
+    /** Key for already computed Data for classes. */
+    private static final String DATA = Enum40.class.getName() + ".data";
 
     /* The ordinal + 1 of this Enum40. The +1 allows detection of invalids. */
     private transient final char ordinal;
@@ -236,6 +233,18 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
 
     /** The object that will be returned in writeReplace(). */
     private transient E writeReplace;
+
+    /** Already computed Data for classes. */
+    private static final Map<Class<?>, Data<?>> getData() {
+        @SuppressWarnings("unchecked")
+        Map<Class<?>, Data<?>> result = (Map<Class<?>, Data<?>>) Statics
+                .get(DATA);
+        if (result == null) {
+            result = Statics.replace(DATA, null,
+                    new HashMap<Class<?>, Data<?>>());
+        }
+        return result;
+    }
 
     /** Checks an already returned field. */
     private static void checkField(final Data<?> data, final int fieldNumber) {
@@ -265,15 +274,17 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static <E extends Enum40<E>> Data<E> dataFor(
             final Class<E> enumClass) {
+        final Map<Class<?>, Data<?>> map = getData();
+        final Data<?> toCheck = map.get(Object.class);
         if (toCheck != null) {
             checkField(toCheck, toCheck.count - 1);
             final Enum40<?>[] all = toCheck.toArray();
             for (final Enum40 e : all) {
                 e.postInit(all);
             }
-            toCheck = null;
+            map.remove(Object.class);
         }
-        Data<E> data = (Data<E>) DATA.get(enumClass);
+        Data<E> data = (Data<E>) map.get(enumClass);
         if (data == null) {
             // Check parents ...
             final Class<?> parent = enumClass.getSuperclass();
@@ -282,7 +293,7 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
             if (parent != Enum40.class) {
                 // We assume that any "Enum40" carrying parent of enumClass
                 // will have been initialized by now.
-                parentData = DATA.get(parent);
+                parentData = map.get(parent);
                 if (parentData == null) {
                     throw new IllegalStateException(parent
                             + " has not yet been initialized!");
@@ -305,7 +316,7 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
             } else {
                 data = new Data<E>(enumClass, parentData, firstID);
             }
-            DATA.put(enumClass, data);
+            map.put(enumClass, data);
         }
         return data;
     }
@@ -322,7 +333,8 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
      */
     private static <E extends Enum40<E>> NameAndOrdinal<E> nextFor(
             final Class<E> enumClass, final long base40ForGeneric) {
-        synchronized (DATA) {
+        final Map<Class<?>, Data<?>> map = getData();
+        synchronized (map) {
             final Data<E> data = dataFor(enumClass);
             final NameAndOrdinal<E> result = new NameAndOrdinal<E>();
             result.data = data;
@@ -338,14 +350,15 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
                 }
                 if (data.count == data.fields.size()) {
                     // Last one!
-                    toCheck = data;
+                    map.put(Object.class, data);
                 }
                 final Field field = data.fields.get(next);
                 result.name = field.getName();
                 result.ordinal = next;
             } else {
                 // Generic instance
-                result.name = Base40.toString(base40ForGeneric, false, true);
+                result.name = getDefaultCharacterSet().toString(
+                        base40ForGeneric, false, true);
                 result.ordinal = 0;
             }
             return result;
@@ -354,7 +367,7 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
 
     /** Returns the all values for the given "enumeration" class. */
     public static <E extends Enum40<E>> E[] values(final Class<E> enumClass) {
-        synchronized (DATA) {
+        synchronized (getData()) {
             return dataFor(enumClass).toArray();
         }
     }
@@ -365,7 +378,7 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
         if (name == null) {
             throw new IllegalStateException("Name is null");
         }
-        synchronized (DATA) {
+        synchronized (getData()) {
             final E result = dataFor(enumClass).nameToValue.get(name);
             if (result == null) {
                 throw new IllegalStateException("Enum40 " + name
@@ -378,12 +391,12 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
     /** Returns the value for the given base-40 ID for the "enumeration" class. */
     public static <E extends Enum40<E>> E valueOf(final Class<E> enumClass,
             final long base40) {
-        synchronized (DATA) {
+        synchronized (getData()) {
             final E result = dataFor(enumClass).base40ToValue.get(base40);
             if (result == null) {
                 throw new IllegalStateException("Enum40 "
-                        + Base40.toString(base40, false, false)
-                        + " not found in " + enumClass);
+                        + getDefaultCharacterSet().toString(base40, false,
+                                false) + " not found in " + enumClass);
             }
             return result;
         }
@@ -394,9 +407,24 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
     ///////////////////////
 
     /** Normal constructor; needs the Enum40 type. */
-    @SuppressWarnings("unchecked")
     protected Enum40(final Class<? extends E> enumClass) {
-        this(nextFor((Class<E>) enumClass, 0L));
+        this(getDefaultCharacterSet(), enumClass);
+    }
+
+    /**
+     * Special constructor for "generic instances"; needs the Enum40 type,
+     * and the base40 ID.
+     */
+    protected Enum40(final Class<? extends E> enumClass,
+            final long base40ForGeneric) {
+        this(getDefaultCharacterSet(), enumClass, base40ForGeneric);
+    }
+
+    /** Normal constructor; needs the Enum40 type. */
+    @SuppressWarnings("unchecked")
+    protected Enum40(final CharacterSet theCharacterSet,
+            final Class<? extends E> enumClass) {
+        this(theCharacterSet, nextFor((Class<E>) enumClass, 0L));
     }
 
     /**
@@ -404,20 +432,23 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
      * and the base40 ID.
      */
     @SuppressWarnings("unchecked")
-    protected Enum40(final Class<? extends E> enumClass,
-            final long base40ForGeneric) {
-        this(nextFor((Class<E>) enumClass, base40ForGeneric));
+    protected Enum40(final CharacterSet theCharacterSet,
+            final Class<? extends E> enumClass, final long base40ForGeneric) {
+        this(theCharacterSet, nextFor((Class<E>) enumClass, base40ForGeneric));
     }
 
     /** Constructor. Only accepts valid names. */
-    private Enum40(final NameAndOrdinal<E> nameAndOrdinal) {
-        this(nameAndOrdinal.data, nameAndOrdinal.name, nameAndOrdinal.ordinal);
+    private Enum40(final CharacterSet theCharacterSet,
+            final NameAndOrdinal<E> nameAndOrdinal) {
+        this(theCharacterSet, nameAndOrdinal.data, nameAndOrdinal.name,
+                nameAndOrdinal.ordinal);
     }
 
     /** Constructor. Only accepts valid names. */
     @SuppressWarnings("unchecked")
-    private Enum40(final Data<E> data, final String name, final int theOrdinal) {
-        super(name);
+    private Enum40(final CharacterSet theCharacterSet, final Data<E> data,
+            final String name, final int theOrdinal) {
+        super(theCharacterSet, name);
         final int ord = data.firstID + theOrdinal + 1;
         if ((ord < 0) || (ord > Character.MAX_VALUE)) {
             throw new IllegalStateException("Bad ordinal: " + ord);
@@ -425,7 +456,7 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
         ordinal = (char) ord;
         declaringClass = data.enumClass;
         writeReplace = (E) this;
-        synchronized (DATA) {
+        synchronized (getData()) {
             final E e = (E) this;
             data.base40ToValue.put(asLong(), e);
             data.nameToValue.put(toString(), e);
@@ -438,11 +469,13 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
     /** Resolves the Enum40. */
     @SuppressWarnings("unchecked")
     private Object readResolve() throws ObjectStreamException {
-        synchronized (DATA) {
+        synchronized (getData()) {
             final Data<E> data = dataFor(getClass());
             E result = data.base40ToValue.get(asLong());
             if (result == null) {
-                LOG.warning("Enum40 " + Base40.toString(asLong(), false, false)
+                final Logger log = Logger.getLogger(Enum40.class.getName());
+                log.warning("Enum40 "
+                        + getCharacterSet().toString(asLong(), false, false)
                         + " not found in " + getClass());
                 result = (E) this;
                 // Through de-serialization, the ordinal becomes -1.
@@ -536,5 +569,10 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
     protected E newInstance(final long base40) {
         throw new IllegalStateException(getClass()
                 + " must implement newInstance(long)!");
+    }
+
+    /** To simplify things, we need to stick to one single character set. */
+    public static CharacterSet getDefaultCharacterSet() {
+        return CharacterSet.newLowerIDCharacterSet();
     }
 }

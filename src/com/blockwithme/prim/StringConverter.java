@@ -24,13 +24,14 @@ package com.blockwithme.prim;
  * supported in most serialization APIs.
  */
 public interface StringConverter<E> {
-	/**
-	 * Converts from object instance.
-	 *
-	 * The expected behavior when receiving null is left on purpose unspecified,
-	 * as it depends on your application needs.
-	 */
-	String fromObject(E obj);
-	/** Converts to an object instance. */
-	E toObject(String value);
+    /**
+     * Converts from object instance.
+     *
+     * The expected behavior when receiving null is left on purpose unspecified,
+     * as it depends on your application needs.
+     */
+    String fromObject(final E obj);
+
+    /** Converts to an object instance. */
+    E toObject(final String value);
 }

@@ -19,22 +19,22 @@ package com.blockwithme.util;
 /**
  * <code>Registry</code> is a generic registry.
  */
-public interface Registry<K,V> {
-	/**
-	 * Registers a key-value pair.
-	 * Both key and value must pass the validation tests.
-	 * If the key was already registered, it will be returned.
-	 * If the key was already registered, and update is true, the value will be replaced.
-	 */
-	V register(K key, V value, boolean update);
+public interface Registry<K, V> {
+    /**
+     * Registers a key-value pair.
+     * Both key and value must pass the validation tests.
+     * If the key was already registered, it will be returned.
+     * If the key was already registered, and update is true, the value will be replaced.
+     */
+    V register(final K key, final V value, final boolean update);
 
-	/** Resolve a value, from a key. Returns null if not resolved. */
-	V find(K key);
+    /** Resolve a value, from a key. Returns null if not resolved. */
+    V find(final K key);
 
-	/**
-	 * Resolve a value, from a key.
-	 * If no value can be resolved, an exception will be thrown.
-	 * @throws java.lang.IllegalStateException
-	 */
-	V get(K key);
+    /**
+     * Resolve a value, from a key.
+     * If no value can be resolved, an exception will be thrown.
+     * @throws java.lang.IllegalStateException
+     */
+    V get(final K key);
 }

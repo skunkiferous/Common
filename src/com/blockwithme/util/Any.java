@@ -104,12 +104,19 @@ public final class Any implements Serializable {
         return AnyType.Object;
     }
 
+    /**  Clears this Any. */
+    public void clear() {
+        object = AnyType.Empty;
+        primitive = 0;
+    }
+
     /** Sets the Any with an Object. */
     public void setObject(final Object obj) {
         if (obj instanceof AnyType) {
             throw new IllegalArgumentException("Cannot contain AnyType!");
         }
         object = obj;
+        primitive = 0;
     }
 
     /**

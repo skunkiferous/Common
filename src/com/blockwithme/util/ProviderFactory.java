@@ -31,52 +31,71 @@ import java.lang.reflect.UndeclaredThrowableException;
  * @author monster
  */
 public class ProviderFactory {
-	/** Singleton provider. */
-	private static class SimpleProvider<E> implements Provider<E> {
-		/** The singleton */
-		private final E instance;
-		/** COnstrucvtort */
-		public SimpleProvider(final E theInstance) {
-			instance = theInstance;
-		}
-		@Override
-		public E get() {
-			return instance;
-		}
-	}
+    /** Singleton provider. */
+    private static class SimpleProvider<E> implements Provider<E> {
+        /** The singleton */
+        private final E instance;
 
-	/** Registry, for pre-registration through DI framework. */
-	private static final Registry<Class<?>,Provider<?>> reg = new RegistryImpl<>();
+        /** COnstrucvtort */
+        public SimpleProvider(final E theInstance) {
+            instance = theInstance;
+        }
 
-	/** Allows pre-registration of providers. */
-	public static <E> void registerProvider(final Class<E> type, final Provider<E> provider) {
-		reg.register(type, provider, true);
-	}
+        @Override
+        public E get() {
+            return instance;
+        }
+    }
 
-	/** Returns a provider for type. */
-	@SuppressWarnings("unchecked")
-	public static <E> Provider<E> providerFor(final Class<E> type, final Class<? extends E> implCls) {
-		final Provider<E> provider = (Provider<E>) reg.find(type);
-		if (provider != null) {
-			return provider;
-		}
-		final String typeName = type.getName();
-		final String implProviderProp = typeName+".provider";
-		final String implProviderName = System.getProperty(implProviderProp, "").trim();
-		if (!implProviderName.isEmpty()) {
-			try {
-				final Class<?> implProviderCls = type.getClassLoader().loadClass(implProviderName);
-				return (Provider<E>) implProviderCls.newInstance();
-			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-				throw new UndeclaredThrowableException(e);
-			}
-		}
-		final E impl;
-		try {
-			impl = (E) implCls.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new UndeclaredThrowableException(e);
-		}
-		return new SimpleProvider<E>(impl);
-	}
+    /** The registry key. */
+    private static final String KEY = ProviderFactory.class.getName() + ".reg";
+
+    /** Registry, for pre-registration through DI framework. */
+    private static final Registry<Class<?>, Provider<?>> reg() {
+        @SuppressWarnings("unchecked")
+        Registry<Class<?>, Provider<?>> result = (Registry<Class<?>, Provider<?>>) Statics
+                .get(KEY);
+        if (result == null) {
+            result = Statics.replace(KEY, null,
+                    new RegistryImpl<Class<?>, Provider<?>>());
+        }
+        return result;
+    }
+
+    /** Allows pre-registration of providers. */
+    public static <E> void registerProvider(final Class<E> type,
+            final Provider<E> provider) {
+        reg().register(type, provider, true);
+    }
+
+    /** Returns a provider for type. */
+    @SuppressWarnings("unchecked")
+    public static <E> Provider<E> providerFor(final Class<E> type,
+            final Class<? extends E> implCls) {
+        final Provider<E> provider = (Provider<E>) reg().find(type);
+        if (provider != null) {
+            return provider;
+        }
+        final String typeName = type.getName();
+        final String implProviderProp = typeName + ".provider";
+        final String implProviderName = System
+                .getProperty(implProviderProp, "").trim();
+        if (!implProviderName.isEmpty()) {
+            try {
+                final Class<?> implProviderCls = type.getClassLoader()
+                        .loadClass(implProviderName);
+                return (Provider<E>) implProviderCls.newInstance();
+            } catch (InstantiationException | IllegalAccessException
+                    | ClassNotFoundException e) {
+                throw new UndeclaredThrowableException(e);
+            }
+        }
+        final E impl;
+        try {
+            impl = implCls.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new UndeclaredThrowableException(e);
+        }
+        return new SimpleProvider<E>(impl);
+    }
 }

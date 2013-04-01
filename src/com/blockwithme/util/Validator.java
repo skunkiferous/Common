@@ -18,21 +18,6 @@ package com.blockwithme.util;
 
 /** Validates some values. */
 public interface Validator<E> {
-	/** Returns true for any value */
-	Validator<Object> ANY = new Validator<Object>() {
-		@Override
-		public String validate(Object e) {
-			return null;
-		}
-	};
-	/** Returns true for non-null values. */
-	Validator<Object> NOT_NULL = new Validator<Object>() {
-		@Override
-		public String validate(Object e) {
-			return (e == null) ? "cannot be null" : null;
-		}
-	};
-
-	/*+ Returns null for valid values, otherwise an error message. */
-	String validate(E e);
+    /*+ Returns null for valid values, otherwise an error message. */
+    String validate(final E e);
 }

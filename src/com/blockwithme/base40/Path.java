@@ -41,6 +41,9 @@ public final class Path implements Serializable, Comparable<Path>, AsLong {
     /** The base-40 value */
     private final long base40;
 
+    /** The character set. */
+    private final CharacterSet characterSet;
+
     /** The textual form. */
     private transient String name;
 
@@ -51,36 +54,39 @@ public final class Path implements Serializable, Comparable<Path>, AsLong {
     private transient int depth;
 
     /** Creates a path from it's string representation. */
-    public static Path fromString(final String path) {
-    	if ((path == null) || path.isEmpty()) {
-    		return null;
-    	}
-    	final String[] paths = path.split(String.valueOf(SEP));
-    	Path result = new Path(paths[0]);
-    	for (int i = 1; i < paths.length; i++) {
-			result = new Path(result, paths[i]);
-		}
-    	return result;
+    public static Path fromString(final CharacterSet characterSet,
+            final String path) {
+        if ((path == null) || path.isEmpty()) {
+            return null;
+        }
+        final String[] paths = path.split(String.valueOf(SEP));
+        Path result = new Path(characterSet, paths[0]);
+        for (int i = 1; i < paths.length; i++) {
+            result = new Path(characterSet, result, paths[i]);
+        }
+        return result;
     }
 
     /** Constructor */
-    public Path(final long value) {
-        this(null, value);
+    public Path(final CharacterSet characterSet, final long value) {
+        this(characterSet, null, value);
     }
 
     /** Constructor */
-    public Path(final String name) {
-        this(null, name);
+    public Path(final CharacterSet characterSet, final String name) {
+        this(characterSet, null, name);
     }
 
     /** Constructor */
-    public Path(final Path parent, final String name) {
-        this.parent = parent;
-        this.base40 = Base40.toLong(name);
+    public Path(final CharacterSet characterSet, final Path parent,
+            final String name) {
+        this(characterSet, parent, characterSet.toLong(name));
     }
 
     /** Constructor */
-    public Path(final Path parent, final long value) {
+    public Path(final CharacterSet characterSet, final Path parent,
+            final long value) {
+        this.characterSet = characterSet;
         this.parent = parent;
         this.base40 = value;
     }
@@ -97,35 +103,37 @@ public final class Path implements Serializable, Comparable<Path>, AsLong {
     }
 
     /** Compares to another path. */
-    private int compareTo(final int myDepth, final int otherDepth, final Path other) {
-    	int result;
-    	if (other == this) {
-    		result = 0;
-    	} else if ((myDepth == 1) && (otherDepth == 1)) {
+    private int compareTo(final int myDepth, final int otherDepth,
+            final Path other) {
+        int result;
+        if (other == this) {
+            result = 0;
+        } else if ((myDepth == 1) && (otherDepth == 1)) {
             result = name().compareTo(other.name());
-    	} else {
-	    	if (myDepth > otherDepth) {
-	    		result = parent.compareTo(myDepth-1, otherDepth, other);
-	    		if (result == 0) {
-	    			// I'm longer, so I'm bigger
-	    			result = 1;
-	    		}
-	    	} else if (myDepth < otherDepth) {
-	    		result = -other.parent.compareTo(otherDepth-1, myDepth, this);
-	    		if (result == 0) {
-	    			// I'm shorter, so I'm smaller
-	    			result = -1;
-	    		}
-	    	} else {
-	    		// Same depth, and > 1
-	    		result = parent.compareTo(myDepth-1, otherDepth-1, other.parent);
-	    		if (result == 0) {
-	    			// Our parents are equal!
-	                result = name().compareTo(other.name());
-	    		}
-	    	}
-    	}
-    	return result;
+        } else {
+            if (myDepth > otherDepth) {
+                result = parent.compareTo(myDepth - 1, otherDepth, other);
+                if (result == 0) {
+                    // I'm longer, so I'm bigger
+                    result = 1;
+                }
+            } else if (myDepth < otherDepth) {
+                result = -other.parent.compareTo(otherDepth - 1, myDepth, this);
+                if (result == 0) {
+                    // I'm shorter, so I'm smaller
+                    result = -1;
+                }
+            } else {
+                // Same depth, and > 1
+                result = parent.compareTo(myDepth - 1, otherDepth - 1,
+                        other.parent);
+                if (result == 0) {
+                    // Our parents are equal!
+                    result = name().compareTo(other.name());
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -139,35 +147,35 @@ public final class Path implements Serializable, Comparable<Path>, AsLong {
 
     @Override
     public int hashCode() {
-    	if (hashcode == 0) {
-	    	hashcode = (parent == null) ? 31 : parent.hashCode() * 31;
-	        hashcode += (int) (base40 ^ (base40 >>> 32));
-    	}
+        if (hashcode == 0) {
+            hashcode = (parent == null) ? 31 : parent.hashCode() * 31;
+            hashcode += (int) (base40 ^ (base40 >>> 32));
+        }
         return hashcode;
     }
 
     /** Returns the "depth of the path. */
     public int depth() {
-    	if (depth == 0) {
-	    	Path p = this;
-	    	while (p != null) {
-	    		depth++;
-	    		p = p.parent;
-	    	}
-    	}
-    	return depth;
+        if (depth == 0) {
+            Path p = this;
+            while (p != null) {
+                depth++;
+                p = p.parent;
+            }
+        }
+        return depth;
     }
 
     /** Returns the path as as array of long. */
     public long[] toLongArray() {
-    	final int depth = depth();
-    	final long[] result = new long[depth];
-    	Path p = this;
-    	for (int i = depth - 1; i >= 0; i--) {
-    		result[i] = p.base40;
-    		p = p.parent;
-    	}
-    	return result;
+        final int depth = depth();
+        final long[] result = new long[depth];
+        Path p = this;
+        for (int i = depth - 1; i >= 0; i--) {
+            result[i] = p.base40;
+            p = p.parent;
+        }
+        return result;
     }
 
     /**
@@ -175,18 +183,18 @@ public final class Path implements Serializable, Comparable<Path>, AsLong {
      * It is not cached.
      */
     public String toFixedString() {
-    	final StringBuilder buf = new StringBuilder();
-    	toFixedString(buf);
-    	return buf.toString();
+        final StringBuilder buf = new StringBuilder();
+        toFixedString(buf);
+        return buf.toString();
     }
 
     /** Builds the string recursively in buf. */
     private void toFixedString(final StringBuilder buf) {
-    	if (parent != null) {
-    		parent.toFixedString(buf);
-    		buf.append(SEP);
-    	}
-    	buf.append(Base40.toString(base40, true, false));
+        if (parent != null) {
+            parent.toFixedString(buf);
+            buf.append(SEP);
+        }
+        buf.append(characterSet.toString(base40, true, false));
     }
 
     /**
@@ -194,19 +202,20 @@ public final class Path implements Serializable, Comparable<Path>, AsLong {
      */
     public String name() {
         if (name == null) {
-        	name(new StringBuilder());
+            name(new StringBuilder());
         }
         return name;
     }
 
     /** Returns the base-40 value */
+    @Override
     public long asLong() {
-    	return base40;
+        return base40;
     }
 
     /** Returns the parent, if any */
     public Path parent() {
-    	return parent;
+        return parent;
     }
 
     /**
@@ -220,14 +229,14 @@ public final class Path implements Serializable, Comparable<Path>, AsLong {
     /** Builds the string recursively in buf. */
     private void name(final StringBuilder buf) {
         if (name == null) {
-	    	if (parent != null) {
-	    		parent.name(buf);
-	    		buf.append(SEP);
-	    	}
-	    	buf.append(Base40.toString(base40, false, false));
-	        name = buf.toString();
+            if (parent != null) {
+                parent.name(buf);
+                buf.append(SEP);
+            }
+            buf.append(characterSet.toString(base40, false, false));
+            name = buf.toString();
         } else {
-        	buf.append(name);
+            buf.append(name);
         }
     }
 }

@@ -22,6 +22,6 @@ package com.blockwithme.util;
  * @author monster
  */
 public interface AsLong {
-	/** Returns the primitive long representation. */
-	long asLong();
+    /** Returns the primitive long representation. */
+    long asLong();
 }

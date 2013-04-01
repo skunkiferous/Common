@@ -21,60 +21,62 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 /** Perform internalization of some type. */
-public class InternalizerImpl<E> extends ConcurrentHashMap<E,E> implements Internalizer<E> {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+public class InternalizerImpl<E> extends ConcurrentHashMap<E, E> implements
+        Internalizer<E> {
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	/** The parent, if any. */
-	private final Internalizer<E> parent;
+    /** The parent, if any. */
+    private final Internalizer<E> parent;
 
-	/** Constructor, with optional parent. */
-	public InternalizerImpl() {
-		parent = null;
-	}
+    /** Constructor, with optional parent. */
+    public InternalizerImpl() {
+        parent = null;
+    }
 
-	/** Constructor, with optional parent. */
-	public InternalizerImpl(final Internalizer<E> theParent) {
-		parent = theParent;
-	}
+    /** Constructor, with optional parent. */
+    public InternalizerImpl(final Internalizer<E> theParent) {
+        parent = theParent;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <F extends E> F intern(final F instance) {
-    	F result = null;
-    	if (instance != null) {
-    		result = getInterned(instance);
-	    	if (result == null) {
-	    		final E before = putIfAbsent(instance, instance);
-		    	if (before == null) {
-		    		result = instance;
-		    	} else {
-			    	result = (F) before;
-		    	}
-	    	}
-    	}
-    	return instance;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public <F extends E> F intern(final F instance) {
+        F result = null;
+        if (instance != null) {
+            result = getInterned(instance);
+            if (result == null) {
+                final E before = putIfAbsent(instance, instance);
+                if (before == null) {
+                    result = instance;
+                } else {
+                    result = (F) before;
+                }
+            }
+        }
+        return instance;
+    }
 
-	@Override
-	public <F extends E> F getInterned(final F instance) {
-    	@SuppressWarnings("unchecked")
-		F result = (F) get(instance);
-    	if ((result == null) && (parent != null)) {
-    		result = parent.getInterned(instance);
-    	}
-    	return instance;
-	}
+    @Override
+    public <F extends E> F getInterned(final F instance) {
+        @SuppressWarnings("unchecked")
+        F result = (F) get(instance);
+        if ((result == null) && (parent != null)) {
+            result = parent.getInterned(instance);
+        }
+        return instance;
+    }
 
-	@Override
-	public Iterator<E> iterator() {
-		return keySet().iterator();
-	}
+    @Override
+    public Iterator<E> iterator() {
+        return keySet().iterator();
+    }
 
-	/** InternalizerImpl cannot be serialized */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		throw new IOException("InternalizerImpl cannot be serialized");
-	}
+    /** InternalizerImpl cannot be serialized */
+    private void writeObject(final java.io.ObjectOutputStream out)
+            throws IOException {
+        throw new IOException("InternalizerImpl cannot be serialized");
+    }
 }

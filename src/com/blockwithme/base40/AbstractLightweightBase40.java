@@ -27,7 +27,7 @@ import com.blockwithme.util.AsLong;
  * For a description of the base-40 encoding, see <code>Base40</code>.
  */
 public abstract class AbstractLightweightBase40<E extends AbstractLightweightBase40<E>>
-implements Serializable, Comparable<E>, AsLong {
+        implements Serializable, Comparable<E>, AsLong {
 
     /** serialVersionUID */
     private static final long serialVersionUID = 1L;
@@ -37,12 +37,7 @@ implements Serializable, Comparable<E>, AsLong {
 
     /** Constructor. Accepts any value. */
     protected AbstractLightweightBase40(final long value) {
-        this.base40 = value;
-    }
-
-    /** Constructor. Only accepts valid names. */
-    protected AbstractLightweightBase40(final String name) {
-        this(Base40.toLong(name));
+        base40 = value;
     }
 
     /* (non-Javadoc)
@@ -53,7 +48,7 @@ implements Serializable, Comparable<E>, AsLong {
         if (o == null) {
             return 1;
         }
-        final AbstractLightweightBase40<?> other = (AbstractLightweightBase40<?>) o;
+        final AbstractLightweightBase40<?> other = o;
         return name().compareTo(other.name());
     }
 
@@ -83,25 +78,32 @@ implements Serializable, Comparable<E>, AsLong {
      * Returns the fixed-size String representation.
      */
     public String fixedName() {
-    	return Base40.toString(base40, true, false);
+        return getCharacterSet().toString(base40, true, false);
     }
 
     /**
      * Returns the variable-length capitalized String representation.
      */
     public String capitalizedName() {
-        return Base40.toString(base40, false, true);
+        return getCharacterSet().toString(base40, false, true);
     }
 
     /**
      * Returns the variable-length String representation.
      */
     public String name() {
-        return Base40.toString(base40, false, false);
+        return getCharacterSet().toString(base40, false, false);
     }
 
     /** Returns the base-40 value */
+    @Override
     public final long asLong() {
-    	return base40;
+        return base40;
     }
+
+    /**
+     * Returns the base-40 character set.
+     * @return the characterSet
+     */
+    public abstract CharacterSet getCharacterSet();
 }

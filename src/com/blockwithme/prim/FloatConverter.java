@@ -21,13 +21,14 @@ package com.blockwithme.prim;
  * to and from Java primitive float values.
  */
 public interface FloatConverter<E> {
-	/**
-	 * Converts from object instance.
-	 *
-	 * The expected behavior when receiving null is left on purpose unspecified,
-	 * as it depends on your application needs.
-	 */
-	float fromObject(E obj);
-	/** Converts to an object instance. */
-	E toObject(float value);
+    /**
+     * Converts from object instance.
+     *
+     * The expected behavior when receiving null is left on purpose unspecified,
+     * as it depends on your application needs.
+     */
+    float fromObject(final E obj);
+
+    /** Converts to an object instance. */
+    E toObject(final float value);
 }

@@ -20,9 +20,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 
-import com.blockwithme.base40.Base40;
-import com.blockwithme.base40.Enum40;
-
 /**
  * Simple tests for Base40
  *
@@ -35,42 +32,46 @@ public class Base40Test {
     /** 64 Zeroes */
     private static final String BINARY_ZEROS = "0000000000000000000000000000000000000000000000000000000000000000";
 
+    private static final CharacterSet CHAR_SET = Base40
+            .getDefaultCharacterSet();
+
     /** The character set */
-    private static final char[] CHARACTERS = Base40.getCharacterSet();
+    private static final char[] CHARACTERS = CHAR_SET.getCharacterSet();
 
     /** The base-40 radix as a BigInteger */
     private static final BigInteger BI_RADIX = new BigInteger(
-            String.valueOf(Base40.RADIX));
+            String.valueOf(CharacterSet.RADIX));
 
     /** Returns the base-40 char[] representation of the value, treated as an
      * unsigned long. If fixedSize is true, it will be MAX_LEN character long. */
     private static char[] toCharArray2(final long value, final boolean fixedSize) {
         BigInteger n = Base40.toUnsigned(value);
-        final char[] chars = new char[Base40.MAX_LEN];
-        int i = Base40.MAX_LEN - 1;
+        final char[] chars = new char[CharacterSet.MAX_LEN];
+        int i = CharacterSet.MAX_LEN - 1;
         while (n.signum() != 0) {
             final BigInteger index = n.mod(BI_RADIX);
             chars[i--] = CHARACTERS[index.intValue()];
             n = n.divide(BI_RADIX);
         }
-        int len = Base40.MAX_LEN - i - 1;
+        int len = CharacterSet.MAX_LEN - i - 1;
         if (len == 0) {
             len = 1;
         }
         while (i >= 0) {
             chars[i--] = '0';
         }
-        if (fixedSize || (Base40.MAX_LEN == len)) {
+        if (fixedSize || (CharacterSet.MAX_LEN == len)) {
             return chars;
         }
-        return Arrays.copyOfRange(chars, Base40.MAX_LEN - len, Base40.MAX_LEN);
+        return Arrays.copyOfRange(chars, CharacterSet.MAX_LEN - len,
+                CharacterSet.MAX_LEN);
     }
 
     private static String toDebugString(final char[] chars) {
         final StringBuilder buf = new StringBuilder();
         for (int i = 0; i < chars.length; i++) {
             final char c = chars[i];
-            buf.append(c).append('(').append(Base40.indexOf(c)).append(')');
+            buf.append(c).append('(').append(CHAR_SET.indexOf(c)).append(')');
         }
         return buf.toString();
     }
@@ -84,9 +85,9 @@ public class Base40Test {
     /** Just for tests. */
     @SuppressWarnings("unused")
     private static void print(final long value) {
-        final Base40 b40 = Base40.get(value);
+        final Base40 b40 = new Base40(CHAR_SET, value);
         System.out.println(value + " " + b40 + " " + b40.fixedName() + " "
-                + Base40.get(b40.toString()).asLong());
+                + new Base40(CHAR_SET, b40.toString()).asLong());
     }
 
     private static void printloop(final long l) {
@@ -96,7 +97,7 @@ public class Base40Test {
         if (missing > 0) {
             lb = BINARY_ZEROS.substring(0, missing) + lb;
         }
-        final char[] longChars = Base40.toCharArray(l, true, false);
+        final char[] longChars = CHAR_SET.toCharArray(l, true, false);
         System.out.println(lb + ":");
         System.out.println("L: " + String.valueOf(l) + " ==> "
                 + new String(longChars) + " ==> " + toDebugString(longChars));
@@ -106,8 +107,8 @@ public class Base40Test {
             bb = BINARY_ZEROS.substring(0, missing) + bb;
         }
         final char[] biChars = toCharArray2(l, true);
-        final int lastL = Base40.indexOf(longChars[Base40.MAX_LEN - 1]);
-        final int lastBI = Base40.indexOf(biChars[Base40.MAX_LEN - 1]);
+        final int lastL = CHAR_SET.indexOf(longChars[CharacterSet.MAX_LEN - 1]);
+        final int lastBI = CHAR_SET.indexOf(biChars[CharacterSet.MAX_LEN - 1]);
         System.out.println("B: " + n + " ==> " + new String(biChars) + " ==> "
                 + toDebugString(biChars) + " DIFF: " + (lastBI - lastL));
         System.out.println();
@@ -125,7 +126,7 @@ public class Base40Test {
         }
 
         protected TestEnum40(final Class<? extends TestEnum40> type) {
-            super(type);
+            super(CHAR_SET, type);
         }
     }
 
@@ -167,11 +168,11 @@ public class Base40Test {
         int bad = 0;
         for (int i = 0; i < loops; i++) {
             final long test = rnd.nextLong();
-            final String lstr = Base40.toString(test, true, false);
+            final String lstr = CHAR_SET.toString(test, true, false);
             final String bistr = toString2(test, true);
 
-            final Base40 a = Base40.get(test);
-            final Base40 b = Base40.get(a.toString());
+            final Base40 a = new Base40(CHAR_SET, test);
+            final Base40 b = new Base40(CHAR_SET, a.toString());
             if ((b.asLong() != test) || !lstr.equals(bistr)) {
                 bad++;
                 printloop(test);

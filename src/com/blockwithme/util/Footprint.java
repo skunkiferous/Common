@@ -20,10 +20,11 @@ package com.blockwithme.util;
 public class Footprint {
 
     /** Are we in 64 bits? */
-    public static final boolean JVM_64_BITS = System.getProperty("os.arch").contains("64");
+    public static final boolean JVM_64_BITS = System.getProperty("os.arch")
+            .contains("64");
 
     /** The architecture "word" size. */
-	private static final int WORD = JVM_64_BITS ? 8 : 4;
+    private static final int WORD = JVM_64_BITS ? 8 : 4;
 
     /** How big is an object without data (approx)? */
     public static final int OBJECT_SIZE = JVM_64_BITS ? 16 : 8;
@@ -36,7 +37,7 @@ public class Footprint {
 
     /** Rounds the footprint to an appropriate multiple of the architecture "word" size. */
     public static int round(final int footprint) {
-    	final int rest = footprint % WORD;
-    	return (rest == 0) ? footprint : (footprint - rest + WORD);
+        final int rest = footprint % WORD;
+        return (rest == 0) ? footprint : (footprint - rest + WORD);
     }
 }

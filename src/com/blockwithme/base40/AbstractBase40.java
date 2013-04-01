@@ -22,11 +22,14 @@ package com.blockwithme.base40;
  *
  * For a description of the base-40 encoding, see <code>Base40</code>.
  */
-public abstract class AbstractBase40<E extends AbstractBase40<E>>
-extends AbstractLightweightBase40<E> {
+public abstract class AbstractBase40<E extends AbstractBase40<E>> extends
+        AbstractLightweightBase40<E> {
 
     /** serialVersionUID */
     private static final long serialVersionUID = 1L;
+
+    /** The base-40 character set. */
+    private final CharacterSet characterSet;
 
     /** The variable-length textual form. */
     private transient String name;
@@ -38,31 +41,46 @@ extends AbstractLightweightBase40<E> {
     private transient String fixedName;
 
     /** Constructor. Accepts any value. */
-    protected AbstractBase40(final long value) {
+    protected AbstractBase40(final CharacterSet theCharacterSet,
+            final long value) {
         super(value);
+        characterSet = theCharacterSet;
     }
 
     /** Constructor. Only accepts valid names. */
-    protected AbstractBase40(final String name) {
-        super(name);
+    protected AbstractBase40(final CharacterSet theCharacterSet,
+            final String name) {
+        super(theCharacterSet.toLong(name));
+        characterSet = theCharacterSet;
+    }
+
+    /**
+     * Returns the base-40 character set.
+     * @return the characterSet
+     */
+    @Override
+    public final CharacterSet getCharacterSet() {
+        return characterSet;
     }
 
     /**
      * Returns the fixed-size String representation.
      */
+    @Override
     public final String fixedName() {
-    	if (fixedName == null) {
-    		fixedName = super.fixedName();
-    	}
-    	return fixedName;
+        if (fixedName == null) {
+            fixedName = super.fixedName();
+        }
+        return fixedName;
     }
 
     /**
      * Returns the variable-length capitalized String representation.
      */
+    @Override
     public final String capitalizedName() {
         if (capitalizedName == null) {
-        	capitalizedName = super.capitalizedName();
+            capitalizedName = super.capitalizedName();
         }
         return capitalizedName;
     }
@@ -70,9 +88,10 @@ extends AbstractLightweightBase40<E> {
     /**
      * Returns the variable-length String representation.
      */
+    @Override
     public final String name() {
         if (name == null) {
-        	name = super.name();
+            name = super.name();
         }
         return name;
     }

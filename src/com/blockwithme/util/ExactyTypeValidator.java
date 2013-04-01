@@ -26,25 +26,25 @@ package com.blockwithme.util;
  */
 public class ExactyTypeValidator<E> implements Validator<E> {
 
-	/** The expected type. */
-	private final Class<E> type;
+    /** The expected type. */
+    private final Class<E> type;
 
-	/** Creates an ExactyTypeValidator */
-	public ExactyTypeValidator(final Class<E> theType) {
-		if (theType == null) {
-			throw new NullPointerException("theType");
-		}
-		type = theType;
-	}
+    /** Creates an ExactyTypeValidator */
+    public ExactyTypeValidator(final Class<E> theType) {
+        if (theType == null) {
+            throw new NullPointerException("theType");
+        }
+        type = theType;
+    }
 
-	@Override
-	public String validate(final E e) {
-		if (e == null) {
-			return "is null";
-		}
-		if (e.getClass() != type) {
-			return "is a "+e.getClass()+" but a "+type+" was expected";
-		}
-		return null;
-	}
+    @Override
+    public String validate(final E e) {
+        if (e == null) {
+            return "is null";
+        }
+        if (e.getClass() != type) {
+            return "is a " + e.getClass() + " but a " + type + " was expected";
+        }
+        return null;
+    }
 }
