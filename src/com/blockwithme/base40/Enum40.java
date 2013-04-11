@@ -466,6 +466,14 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
         }
     }
 
+    /**
+     * Enum40 instances are normally only equal to themselves.
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        return (this == obj);
+    }
+
     /** Resolves the Enum40. */
     @SuppressWarnings("unchecked")
     private Object readResolve() throws ObjectStreamException {
@@ -569,6 +577,23 @@ public abstract class Enum40<E extends Enum40<E>> extends AbstractBase40<E> {
     protected E newInstance(final long base40) {
         throw new IllegalStateException(getClass()
                 + " must implement newInstance(long)!");
+    }
+
+    /**
+     * Compares two instances of Enum40, allowing "sub-typing".
+     * This method should be overridden, to specify that an Enum40 value
+     * represent a "sub-type" (specialization) of another Enum40 value.
+     *
+     * It can be used, where the "parent" enum definitions define general
+     * categories, like car, planes, ... and a sub-class defines some more
+     * specific categories, like BMW, which are sub-categories of parent categories.
+     *
+     * If you do not match, you must delegate to the superclass
+     * method, to allow for transitivity. The default implementation
+     * just delegates to equals.
+     */
+    public boolean isA(final Enum40<?> other) {
+        return equals(other);
     }
 
     /** To simplify things, we need to stick to one single character set. */
