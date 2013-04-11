@@ -23,7 +23,7 @@ package com.blockwithme.base40;
  * For a description of the base-40 encoding, see <code>Base40</code>.
  */
 public abstract class AbstractBase40<E extends AbstractBase40<E>> extends
-        AbstractLightweightBase40<E> {
+        AbstractLightweightBase40<E> implements CharSequence {
 
     /** serialVersionUID */
     private static final long serialVersionUID = 1L;
@@ -94,5 +94,20 @@ public abstract class AbstractBase40<E extends AbstractBase40<E>> extends
             name = super.name();
         }
         return name;
+    }
+
+    @Override
+    public final int length() {
+        return name().length();
+    }
+
+    @Override
+    public final char charAt(final int index) {
+        return name().charAt(index);
+    }
+
+    @Override
+    public final CharSequence subSequence(final int start, final int end) {
+        return name().subSequence(start, end);
     }
 }
