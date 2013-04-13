@@ -18,14 +18,15 @@ package com.blockwithme.util;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
 
 /**
- * Helper class, returns the *current time* at nano precision, but the nanos
- * are estimated.
+ * Helper class, returns the *current (local) time* at nano precision, but
+ * the nanos are estimated.
  *
  * This class tries to contact some public NTP time servers, so that it can
  * return a value as close as possible to the real time, even if the local
@@ -48,6 +49,10 @@ public class CurrentTimeNanos {
 
     /** The difference between System.currentTimeMillis() and System.nanoTime(). */
     private static final long DIFF = diff() + TS_DIFF * 1000000L;
+
+    /** Offset, to convert the local nano time to UTC nano time. */
+    private static final long OFFSET_NS_LOCAL_TO_UTC = -TimeZone.getDefault()
+            .getOffset(currentTimeNanos() / 1000000L) * 1000000L;
 
     /** Time in nanoseconds, at last call. */
     private static final AtomicLong LAST_NANO_TIME = new AtomicLong(
@@ -171,6 +176,27 @@ public class CurrentTimeNanos {
         }
     }
 
+    /**
+     * Returns an approximation of the *current UTC time* at nano-seconds scale.
+     */
+    public static long utcTimeNanos() {
+        return System.nanoTime() + (DIFF + OFFSET_NS_LOCAL_TO_UTC);
+    }
+
+    /**
+     * Returns an approximation of the *current UTC time* at nano-seconds scale.
+     *
+     * @see #safeCurrentTimeNanos()
+     */
+    public static long safeUTCTimeNanos() {
+        return safeCurrentTimeNanos() + OFFSET_NS_LOCAL_TO_UTC;
+    }
+
+    /** Offset, to convert the local nano time to UTC nano time. */
+    public static long getLocalToUTCOffsetNS() {
+        return OFFSET_NS_LOCAL_TO_UTC;
+    }
+
     private CurrentTimeNanos() {
         // NOP
     }
@@ -183,5 +209,8 @@ public class CurrentTimeNanos {
         System.out.println("timeNS:    " + timeNS);
         System.out.println("nanoTime:  " + nanoTime);
         System.out.println("MAX_VALUE: " + Long.MAX_VALUE);
+        System.out
+                .println("UTC OFFSET:" + OFFSET_NS_LOCAL_TO_UTC / 1000000000L);
+        System.out.println("UTC-nano:  " + utcTimeNanos());
     }
 }

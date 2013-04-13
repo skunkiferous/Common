@@ -65,7 +65,10 @@ public class NanoClock extends Clock {
 
     @Override
     public Instant instant() {
-        final long currentTimeNanos = CurrentTimeNanos.safeCurrentTimeNanos();
+        return instant(CurrentTimeNanos.safeCurrentTimeNanos());
+    }
+
+    public static Instant instant(final long currentTimeNanos) {
         final long epochSecond = currentTimeNanos / 1000000000L;
         final long nanoAdjustment = currentTimeNanos - epochSecond
                 * 1000000000L;
