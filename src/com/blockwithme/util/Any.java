@@ -18,13 +18,17 @@ package com.blockwithme.util;
 import java.io.Serializable;
 
 /**
- * Smallest possible mutable class that could contain anything.
+ * Smallest possible mutable class that could contain anything,
+ * without requiring "boxing" of primitive values.
+ *
+ * Note that it also supports the AnyType.Empty, which allows us to represent
+ * "no data", for example, when querying the value of a non-existent property.
  *
  * TODO Test!
  *
  * @author monster
  */
-public final class Any implements Serializable {
+public class Any implements Serializable {
 
     /** serialVersionUID */
     private static final long serialVersionUID = -2510171712544971710L;
@@ -47,6 +51,46 @@ public final class Any implements Serializable {
         object = obj;
     }
 
+    /** Any with boolean. */
+    public Any(final boolean value) {
+        setBoolean(value);
+    }
+
+    /** Any with byte. */
+    public Any(final byte value) {
+        setByte(value);
+    }
+
+    /** Any with short. */
+    public Any(final short value) {
+        setShort(value);
+    }
+
+    /** Any with char. */
+    public Any(final char value) {
+        setChar(value);
+    }
+
+    /** Any with int. */
+    public Any(final int value) {
+        setInt(value);
+    }
+
+    /** Any with long. */
+    public Any(final long value) {
+        setLong(value);
+    }
+
+    /** Any with float. */
+    public Any(final float value) {
+        setFloat(value);
+    }
+
+    /** Any with double. */
+    public Any(final double value) {
+        setDouble(value);
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -59,7 +103,7 @@ public final class Any implements Serializable {
      * @see java.lang.Object#hashCode()
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((object == null) ? 0 : object.hashCode());
@@ -71,7 +115,7 @@ public final class Any implements Serializable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(final Object obj) {
+    public final boolean equals(final Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
@@ -80,22 +124,24 @@ public final class Any implements Serializable {
             return false;
         final Any other = (Any) obj;
         if (object == null) {
-            if (other.object != null)
+            if (other.object != null) {
                 return false;
-        } else if (!object.equals(other.object))
+            }
+        } else if (!object.equals(other.object)) {
             return false;
+        }
         if (primitive != other.primitive)
             return false;
         return true;
     }
 
     /** Is this any empty? Empty mean no value set; it is different from having set "null" as object. */
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return (object == AnyType.Empty);
     }
 
     /** Returns the current type of the data. */
-    public AnyType type() {
+    public final AnyType type() {
         if (object instanceof AnyType) {
             // Not an object
             return (AnyType) object;
@@ -105,17 +151,19 @@ public final class Any implements Serializable {
     }
 
     /**  Clears this Any. */
-    public void clear() {
+    public final void clear() {
         object = AnyType.Empty;
         primitive = 0;
     }
 
     /** Sets the Any with an Object. */
-    public void setObject(final Object obj) {
+    public final void setObject(final Object obj) {
         if (obj instanceof AnyType) {
             throw new IllegalArgumentException("Cannot contain AnyType!");
         }
         object = obj;
+        // This is important, so that equals of two Any works,
+        // when at least one of them contained a primitive value before.
         primitive = 0;
     }
 
@@ -124,7 +172,7 @@ public final class Any implements Serializable {
      * @throws java.lang.IllegalStateException if Any does not contain an Object.
      * @return the Object.
      */
-    public Object getObject() {
+    public final Object getObject() {
         if (object instanceof AnyType) {
             throw new IllegalStateException("Not an Object: " + object);
         }
@@ -135,12 +183,12 @@ public final class Any implements Serializable {
      * Return the Object, without validation.
      * @return the Object.
      */
-    public Object getObjectUnsafe() {
+    public final Object getObjectUnsafe() {
         return object;
     }
 
     /** Sets the Any with a boolean. */
-    public void setBoolean(final boolean value) {
+    public final void setBoolean(final boolean value) {
         object = AnyType.Boolean;
         primitive = value ? 1 : 0;
     }
@@ -150,7 +198,7 @@ public final class Any implements Serializable {
      * @throws java.lang.IllegalStateException if Any does not contain an boolean.
      * @return the boolean.
      */
-    public boolean getBoolean() {
+    public final boolean getBoolean() {
         if (object != AnyType.Boolean) {
             throw new IllegalStateException("Not a boolean: " + object);
         }
@@ -161,14 +209,14 @@ public final class Any implements Serializable {
      * Return the boolean, without validation.
      * @return the boolean.
      */
-    public boolean getBooleanUnsafe() {
+    public final boolean getBooleanUnsafe() {
         return (primitive != 0);
     }
 
     /** Sets the Any with a byte. */
-    public void setByte(final byte value) {
+    public final void setByte(final byte value) {
         object = AnyType.Byte;
-        primitive = value & 0xFFL;
+        primitive = value;
     }
 
     /**
@@ -176,7 +224,7 @@ public final class Any implements Serializable {
      * @throws java.lang.IllegalStateException if Any does not contain an byte.
      * @return the byte.
      */
-    public byte getByte() {
+    public final byte getByte() {
         if (object != AnyType.Byte) {
             throw new IllegalStateException("Not a byte: " + object);
         }
@@ -187,14 +235,14 @@ public final class Any implements Serializable {
      * Return the byte, without validation.
      * @return the byte.
      */
-    public byte getByteUnsafe() {
+    public final byte getByteUnsafe() {
         return (byte) primitive;
     }
 
     /** Sets the Any with a char. */
-    public void setChar(final char value) {
+    public final void setChar(final char value) {
         object = AnyType.Char;
-        primitive = value & 0xFFFFL;
+        primitive = value;
     }
 
     /**
@@ -202,7 +250,7 @@ public final class Any implements Serializable {
      * @throws java.lang.IllegalStateException if Any does not contain an char.
      * @return the char.
      */
-    public char getChar() {
+    public final char getChar() {
         if (object != AnyType.Char) {
             throw new IllegalStateException("Not a char: " + object);
         }
@@ -213,14 +261,14 @@ public final class Any implements Serializable {
      * Return the char, without validation.
      * @return the char.
      */
-    public char getCharUnsafe() {
+    public final char getCharUnsafe() {
         return (char) primitive;
     }
 
     /** Sets the Any with a short. */
     public void setShort(final short value) {
         object = AnyType.Short;
-        primitive = value & 0xFFFFL;
+        primitive = value;
     }
 
     /**
@@ -228,7 +276,7 @@ public final class Any implements Serializable {
      * @throws java.lang.IllegalStateException if Any does not contain an short.
      * @return the short.
      */
-    public short getShort() {
+    public final short getShort() {
         if (object != AnyType.Short) {
             throw new IllegalStateException("Not a short: " + object);
         }
@@ -239,14 +287,14 @@ public final class Any implements Serializable {
      * Return the short, without validation.
      * @return the short.
      */
-    public short getShortUnsafe() {
+    public final short getShortUnsafe() {
         return (short) primitive;
     }
 
     /** Sets the Any with a int. */
-    public void setInt(final int value) {
+    public final void setInt(final int value) {
         object = AnyType.Int;
-        primitive = value & 0xFFFFFFFFL;
+        primitive = value;
     }
 
     /**
@@ -254,7 +302,7 @@ public final class Any implements Serializable {
      * @throws java.lang.IllegalStateException if Any does not contain an int.
      * @return the int.
      */
-    public int getInt() {
+    public final int getInt() {
         if (object != AnyType.Int) {
             throw new IllegalStateException("Not a int: " + object);
         }
@@ -265,12 +313,12 @@ public final class Any implements Serializable {
      * Return the int, without validation.
      * @return the int.
      */
-    public int getIntUnsafe() {
+    public final int getIntUnsafe() {
         return (int) primitive;
     }
 
     /** Sets the Any with a long. */
-    public void setLong(final long value) {
+    public final void setLong(final long value) {
         object = AnyType.Long;
         primitive = value;
     }
@@ -280,7 +328,7 @@ public final class Any implements Serializable {
      * @throws java.lang.IllegalStateException if Any does not contain an long.
      * @return the long.
      */
-    public long getLong() {
+    public final long getLong() {
         if (object != AnyType.Long) {
             throw new IllegalStateException("Not a long: " + object);
         }
@@ -291,14 +339,14 @@ public final class Any implements Serializable {
      * Return the long, without validation.
      * @return the long.
      */
-    public long getLongUnsafe() {
+    public final long getLongUnsafe() {
         return primitive;
     }
 
     /** Sets the Any with a float. */
-    public void setFloat(final float value) {
+    public final void setFloat(final float value) {
         object = AnyType.Float;
-        primitive = Float.floatToRawIntBits(value) & 0xFFFFFFFFL;
+        primitive = Float.floatToRawIntBits(value);
     }
 
     /**
@@ -306,23 +354,23 @@ public final class Any implements Serializable {
      * @throws java.lang.IllegalStateException if Any does not contain an float.
      * @return the float.
      */
-    public float getFloat() {
+    public final float getFloat() {
         if (object != AnyType.Float) {
             throw new IllegalStateException("Not a float: " + object);
         }
-        return Float.intBitsToFloat((int) primitive);
+        return getFloatUnsafe();
     }
 
     /**
      * Return the int, without validation.
      * @return the int.
      */
-    public float getFloatUnsafe() {
+    public final float getFloatUnsafe() {
         return Float.intBitsToFloat((int) primitive);
     }
 
     /** Sets the Any with a double. */
-    public void setDouble(final double value) {
+    public final void setDouble(final double value) {
         object = AnyType.Double;
         primitive = Double.doubleToRawLongBits(value);
     }
@@ -332,18 +380,18 @@ public final class Any implements Serializable {
      * @throws java.lang.IllegalStateException if Any does not contain an double.
      * @return the double.
      */
-    public double getDouble() {
+    public final double getDouble() {
         if (object != AnyType.Double) {
             throw new IllegalStateException("Not a double: " + object);
         }
-        return Double.longBitsToDouble(primitive);
+        return getDoubleUnsafe();
     }
 
     /**
      * Return the double, without validation.
      * @return the double.
      */
-    public double getDoubleUnsafe() {
+    public final double getDoubleUnsafe() {
         return Double.longBitsToDouble(primitive);
     }
 }

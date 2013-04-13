@@ -16,7 +16,14 @@
 
 package com.blockwithme.util;
 
-/** Helper class to compute the approximate memory footprint of an object. */
+/**
+ * Helper class to compute the approximate memory footprint of an object.
+ *
+ * TODO Add methods to compute the size of java.util.Collections, to make
+ * size computation easier...
+ *
+ * @author monster
+ */
 public class Footprint {
 
     /** Are we in 64 bits? */
@@ -26,10 +33,10 @@ public class Footprint {
     /** The architecture "word" size. */
     private static final int WORD = JVM_64_BITS ? 8 : 4;
 
-    /** How big is an object without data (approx)? */
+    /** How big is an object without data (approximately)? */
     public static final int OBJECT_SIZE = JVM_64_BITS ? 16 : 8;
 
-    /** How big is an empty array (approx)? */
+    /** How big is an empty array (approximately)? */
     public static final int ARRAY_SIZE = JVM_64_BITS ? 24 : 12;
 
     /** How big is an object reference? (We assume compressed pointers in 64 bit) */
@@ -39,5 +46,36 @@ public class Footprint {
     public static int round(final int footprint) {
         final int rest = footprint % WORD;
         return (rest == 0) ? footprint : (footprint - rest + WORD);
+    }
+
+    /**
+     * Returns the (rounded) footprint for an array of the given type, with the given size.
+     * For objects, does NOT contain the size of the objects themselves, but only
+     * the size taken by the object-reference within the array.
+     */
+    public static int array(final AnyType type, final int size) {
+        return round(ARRAY_SIZE + type.sizeInBytes * size);
+    }
+
+    /**
+     * Returns the footprint for an array as array(AnyType.Object, size),
+     * plus size * avgObjectFootprint. Note that avgObjectFootprint should
+     * take null, ... into consideration, when deciding on an average.
+     */
+    public static int objectArray(final int size, final int avgObjectFootprint) {
+        return array(AnyType.Object, size) + (avgObjectFootprint * size);
+    }
+
+    /**
+     * Returns the (rounded) size of an object with the given fields. Does NOT
+     * take into consideration, the size of the child objects, pointed to by
+     * the references. Remember to include the fields of the base-classes.
+     */
+    public static int object(final AnyType... fields) {
+        int sumFields = 0;
+        for (final AnyType type : fields) {
+            sumFields += type.sizeInBytes;
+        }
+        return round(OBJECT_SIZE + sumFields);
     }
 }

@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>Common</artifactId>
-	<version>0.0.4</version>
+	<version>0.0.5</version>
 	<packaging>bundle</packaging>
 	<name>Common</name>
 	<description>Common functionality, shared by most on BlockWithMe projects.</description>
@@ -100,6 +100,16 @@
 			<groupId>org.junit</groupId>
 			<artifactId>com.springsource.org.junit</artifactId>
 			<version>4.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.threeten</groupId>
+			<artifactId>threetenbp</artifactId>
+			<version>0.8.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>2.0</version>
 		</dependency>
 	</dependencies>
 
