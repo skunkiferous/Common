@@ -32,6 +32,9 @@ import org.apache.commons.net.ntp.TimeInfo;
  * clock is skewed. This happens only once on first access, such that long
  * running JVM will eventually drift away, even with the correction.
  *
+ * TODO: This class cannot currently handle the summer/winter time changes
+ * done by the OS, *while the JVM is running*.
+ *
  * @author monster
  */
 public class CurrentTimeNanos {
