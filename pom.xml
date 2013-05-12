@@ -69,7 +69,9 @@
 					<manifestLocation>${project.basedir}/META-INF</manifestLocation>
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Export-Package>com.blockwithme.util</Export-Package>
+						<Export-Package>com.blockwithme.util;version=${project.version},
+							com.blockwithme.base40;version=${project.version},
+							com.blockwithme.prim;version=${project.version}</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -94,40 +96,4 @@
 			</resource>
 		</resources>
 	</build>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.junit</groupId>
-			<artifactId>com.springsource.org.junit</artifactId>
-			<version>4.10.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.threeten</groupId>
-			<artifactId>threetenbp</artifactId>
-			<version>0.8.1</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-net</groupId>
-			<artifactId>commons-net</artifactId>
-			<version>2.0</version>
-		</dependency>
-	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>blockwithme-mvn-repo</id>
-			<url>https://raw.github.com/skunkiferous/Maven/master</url>
-		</repository>
-		<repository>
-			<id>com.springsource.repository.bundles.release</id>
-			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle
-			Releases</name>
-			<url>http://repository.springsource.com/maven/bundles/release</url>
-		</repository>
-		<repository>
-			<id>com.springsource.repository.bundles.external</id>
-			<name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
-			<url>http://repository.springsource.com/maven/bundles/external</url>
-		</repository>
-	</repositories>
 </project>

@@ -86,6 +86,11 @@ public class LongObjectCacheImpl<E> extends ReferenceQueue<E> implements
         }
     }
 
+    /** Constructor. */
+    public LongObjectCacheImpl() {
+        // NOP
+    }
+
     /** Returns the object with the ID, if any. */
     @SuppressWarnings("unchecked")
     @Override
