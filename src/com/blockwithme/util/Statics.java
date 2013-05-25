@@ -50,8 +50,17 @@ public class Statics {
         if (key == null) {
             throw new NullPointerException("key");
         }
-        if (cache.replace(key, oldValue, newValue)) {
-            return newValue;
+        if (newValue == null) {
+            throw new NullPointerException("newValue");
+        }
+        if (oldValue == null) {
+            if (cache.putIfAbsent(key, newValue) == null) {
+                return newValue;
+            }
+        } else {
+            if (cache.replace(key, oldValue, newValue)) {
+                return newValue;
+            }
         }
         return (E) cache.get(key);
     }

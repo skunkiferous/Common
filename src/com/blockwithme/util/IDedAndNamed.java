@@ -16,17 +16,17 @@
 package com.blockwithme.util;
 
 /**
- * Defines the current type of data in an Any.
+ * Can be implemented by objects that have a long ID, and optionally a non-null
+ * String name.
  *
  * @author monster
  */
-public enum AnyType {
-    Empty(0), Boolean(1), Byte(1), Char(2), Short(2), Int(4), Long(8), Float(4), Double(
-            8), Object(Footprint.REFERENCE);
-    /** The size in bytes of one value (reference for Object) of that type. */
-    public final int sizeInBytes;
+public interface IDedAndNamed {
 
-    private AnyType(final int theSizeInBytes) {
-        sizeInBytes = theSizeInBytes;
-    }
+    /** Returns the object ID. It must not be 0. */
+    long id();
+
+    /** Returns the optional object name.*/
+    String name();
+
 }
