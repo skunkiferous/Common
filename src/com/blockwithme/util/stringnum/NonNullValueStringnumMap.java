@@ -45,6 +45,12 @@ public final class NonNullValueStringnumMap<V> extends AbstractStringnumMap<V> {
     /** Number of non-null values. */
     private int size;
 
+    /** The optional keyset. */
+    private Set<String> keySet;
+
+    /** The optional values. */
+    private Collection<V> values;
+
     /* (non-Javadoc)
      * @see com.blockwithme.util.stringnum.AbstractStringnumMap#acceptValue(java.lang.Object)
      */
@@ -111,36 +117,39 @@ public final class NonNullValueStringnumMap<V> extends AbstractStringnumMap<V> {
      */
     @Override
     public Set<String> keySet() {
-        return new AbstractSet<String>() {
-            @Override
-            public Iterator<String> iterator() {
-                final Iterator<java.util.Map.Entry<String, V>> iter = entrySet()
-                        .iterator();
-                return new Iterator<String>() {
-                    private String last;
+        if (keySet == null) {
+            keySet = new AbstractSet<String>() {
+                @Override
+                public Iterator<String> iterator() {
+                    final Iterator<java.util.Map.Entry<String, V>> iter = entrySet()
+                            .iterator();
+                    return new Iterator<String>() {
+                        private String last;
 
-                    @Override
-                    public boolean hasNext() {
-                        return iter.hasNext();
-                    }
+                        @Override
+                        public boolean hasNext() {
+                            return iter.hasNext();
+                        }
 
-                    @Override
-                    public String next() {
-                        return (last = iter.next().getKey());
-                    }
+                        @Override
+                        public String next() {
+                            return (last = iter.next().getKey());
+                        }
 
-                    @Override
-                    public void remove() {
-                        put(last, null);
-                    }
-                };
-            }
+                        @Override
+                        public void remove() {
+                            put(last, null);
+                        }
+                    };
+                }
 
-            @Override
-            public int size() {
-                return size;
-            }
-        };
+                @Override
+                public int size() {
+                    return size;
+                }
+            };
+        }
+        return keySet;
     }
 
     /* (non-Javadoc)
@@ -148,33 +157,36 @@ public final class NonNullValueStringnumMap<V> extends AbstractStringnumMap<V> {
      */
     @Override
     public Collection<V> values() {
-        return new AbstractCollection<V>() {
-            @Override
-            public Iterator<V> iterator() {
-                final Iterator<java.util.Map.Entry<String, V>> iter = entrySet()
-                        .iterator();
-                return new Iterator<V>() {
-                    @Override
-                    public boolean hasNext() {
-                        return iter.hasNext();
-                    }
+        if (values == null) {
+            values = new AbstractCollection<V>() {
+                @Override
+                public Iterator<V> iterator() {
+                    final Iterator<java.util.Map.Entry<String, V>> iter = entrySet()
+                            .iterator();
+                    return new Iterator<V>() {
+                        @Override
+                        public boolean hasNext() {
+                            return iter.hasNext();
+                        }
 
-                    @Override
-                    public V next() {
-                        return iter.next().getValue();
-                    }
+                        @Override
+                        public V next() {
+                            return iter.next().getValue();
+                        }
 
-                    @Override
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-                };
-            }
+                        @Override
+                        public void remove() {
+                            throw new UnsupportedOperationException();
+                        }
+                    };
+                }
 
-            @Override
-            public int size() {
-                return size;
-            }
-        };
+                @Override
+                public int size() {
+                    return size;
+                }
+            };
+        }
+        return values;
     }
 }

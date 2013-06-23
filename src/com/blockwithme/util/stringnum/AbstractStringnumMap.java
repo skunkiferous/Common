@@ -50,6 +50,9 @@ public abstract class AbstractStringnumMap<V> implements Map<String, V> {
     /** The associated data, if any. */
     protected Object[] data = EMPTY;
 
+    /** The optional entry set. */
+    private Set<java.util.Map.Entry<String, V>> entrySet;
+
     /** Make sure data is at least as big as stringnums. */
     protected final void ensureDataCapacity() {
         final int size = stringnum.size();
@@ -61,6 +64,11 @@ public abstract class AbstractStringnumMap<V> implements Map<String, V> {
     /** Constructor. */
     protected AbstractStringnumMap(final Stringnum stringnum) {
         this.stringnum = Objects.requireNonNull(stringnum);
+    }
+
+    /** Our stringnum */
+    public final Stringnum stringnum() {
+        return stringnum;
     }
 
     /* (non-Javadoc)
@@ -116,67 +124,70 @@ public abstract class AbstractStringnumMap<V> implements Map<String, V> {
      */
     @Override
     public final Set<java.util.Map.Entry<String, V>> entrySet() {
-        return new AbstractSet<java.util.Map.Entry<String, V>>() {
-            @Override
-            public Iterator<java.util.Map.Entry<String, V>> iterator() {
-                return new Iterator<Map.Entry<String, V>>() {
-                    private int next;
-                    private int count;
-                    private java.util.Map.Entry<String, V> last;
+        if (entrySet == null) {
+            entrySet = new AbstractSet<java.util.Map.Entry<String, V>>() {
+                @Override
+                public Iterator<java.util.Map.Entry<String, V>> iterator() {
+                    return new Iterator<Map.Entry<String, V>>() {
+                        private int next;
+                        private int count;
+                        private java.util.Map.Entry<String, V> last;
 
-                    @Override
-                    public boolean hasNext() {
-                        return count < size();
-                    }
-
-                    @SuppressWarnings("unchecked")
-                    @Override
-                    public java.util.Map.Entry<String, V> next() {
-                        int index;
-                        V tmp;
-                        do {
-                            index = next++;
-                            tmp = (V) ((index < data.length) ? data[index]
-                                    : null);
-                        } while (!acceptValue(tmp));
-                        count++;
-                        final String key = stringnum.get(index);
-                        final V value = tmp;
-                        last = new java.util.Map.Entry<String, V>() {
-
-                            @Override
-                            public String getKey() {
-                                return key;
-                            }
-
-                            @Override
-                            public V getValue() {
-                                return value;
-                            }
-
-                            @Override
-                            public V setValue(final V value) {
-                                return put(key, value);
-                            }
-                        };
-                        return last;
-                    }
-
-                    @Override
-                    public void remove() {
-                        if (last != null) {
-                            last.setValue(null);
-                            last = null;
+                        @Override
+                        public boolean hasNext() {
+                            return count < size();
                         }
-                    }
-                };
-            }
 
-            @Override
-            public int size() {
-                return AbstractStringnumMap.this.size();
-            }
-        };
+                        @SuppressWarnings("unchecked")
+                        @Override
+                        public java.util.Map.Entry<String, V> next() {
+                            int index;
+                            V tmp;
+                            do {
+                                index = next++;
+                                tmp = (V) ((index < data.length) ? data[index]
+                                        : null);
+                            } while (!acceptValue(tmp));
+                            count++;
+                            final String key = stringnum.get(index);
+                            final V value = tmp;
+                            last = new java.util.Map.Entry<String, V>() {
+
+                                @Override
+                                public String getKey() {
+                                    return key;
+                                }
+
+                                @Override
+                                public V getValue() {
+                                    return value;
+                                }
+
+                                @Override
+                                public V setValue(final V value) {
+                                    return put(key, value);
+                                }
+                            };
+                            return last;
+                        }
+
+                        @Override
+                        public void remove() {
+                            if (last != null) {
+                                last.setValue(null);
+                                last = null;
+                            }
+                        }
+                    };
+                }
+
+                @Override
+                public int size() {
+                    return AbstractStringnumMap.this.size();
+                }
+            };
+        }
+        return entrySet;
     }
 
     /* (non-Javadoc)

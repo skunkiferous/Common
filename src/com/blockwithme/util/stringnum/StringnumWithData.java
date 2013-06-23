@@ -24,6 +24,8 @@ import java.util.Arrays;
  * We do not actually check the type of the data objects, so it could be
  * anything or null.
  *
+ * This object is NOT thread-safe.
+ *
  * @author monster
  */
 public class StringnumWithData<E> extends Stringnum {
