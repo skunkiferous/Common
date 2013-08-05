@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>Common</artifactId>
-	<version>0.0.7</version>
+	<version>0.0.8</version>
 	<packaging>bundle</packaging>
 	<name>Common</name>
 	<description>Common functionality, shared by most on BlockWithMe projects.</description>
@@ -101,6 +101,11 @@
 			<groupId>org.junit</groupId>
 			<artifactId>com.springsource.org.junit</artifactId>
 			<version>4.10.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.codehaus.groovy</groupId>
+		    <artifactId>groovy-all</artifactId>
+		    <version>2.1.5</version>
 		</dependency>
 	</dependencies>
 	<repositories>
