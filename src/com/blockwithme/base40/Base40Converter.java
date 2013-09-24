@@ -57,4 +57,12 @@ public class Base40Converter implements LongConverter<Base40> {
     public Class<Base40> type() {
         return Base40.class;
     }
+
+    /* (non-Javadoc)
+     * @see com.blockwithme.prim.Converter#bits()
+     */
+    @Override
+    public int bits() {
+        return 64;
+    }
 }
