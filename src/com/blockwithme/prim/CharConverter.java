@@ -21,6 +21,32 @@ package com.blockwithme.prim;
  * to and from Java primitive char values.
  */
 public interface CharConverter<E> extends Converter<E> {
+    /** The default bits. */
+    int DEFAULT_BITS = 16;
+
+    /** The default CharConverter<E>. */
+    CharConverter<Character> DEFAULT = new CharConverter<Character>() {
+        @Override
+        public Class<Character> type() {
+            return Character.class;
+        }
+
+        @Override
+        public int bits() {
+            return DEFAULT_BITS;
+        }
+
+        @Override
+        public char fromObject(final Character obj) {
+            return (obj == null) ? 0 : obj;
+        }
+
+        @Override
+        public Character toObject(final char value) {
+            return value;
+        }
+    };
+
     /**
      * Converts from object instance.
      *

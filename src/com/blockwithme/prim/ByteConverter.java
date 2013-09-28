@@ -21,6 +21,32 @@ package com.blockwithme.prim;
  * to and from Java primitive byte values.
  */
 public interface ByteConverter<E> extends Converter<E> {
+    /** The default bits. */
+    int DEFAULT_BITS = 8;
+
+    /** The default ByteConverter<E>. */
+    ByteConverter<Byte> DEFAULT = new ByteConverter<Byte>() {
+        @Override
+        public Class<Byte> type() {
+            return Byte.class;
+        }
+
+        @Override
+        public int bits() {
+            return DEFAULT_BITS;
+        }
+
+        @Override
+        public byte fromObject(final Byte obj) {
+            return (obj == null) ? 0 : obj;
+        }
+
+        @Override
+        public Byte toObject(final byte value) {
+            return value;
+        }
+    };
+
     /**
      * Converts from object instance.
      *

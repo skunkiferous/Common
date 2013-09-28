@@ -21,6 +21,32 @@ package com.blockwithme.prim;
  * to and from Java primitive int values.
  */
 public interface IntConverter<E> extends Converter<E> {
+    /** The default bits. */
+    int DEFAULT_BITS = 32;
+
+    /** The default IntConverter<E>. */
+    IntConverter<Integer> DEFAULT = new IntConverter<Integer>() {
+        @Override
+        public Class<Integer> type() {
+            return Integer.class;
+        }
+
+        @Override
+        public int bits() {
+            return DEFAULT_BITS;
+        }
+
+        @Override
+        public int fromObject(final Integer obj) {
+            return (obj == null) ? 0 : obj;
+        }
+
+        @Override
+        public Integer toObject(final int value) {
+            return value;
+        }
+    };
+
     /**
      * Converts from object instance.
      *

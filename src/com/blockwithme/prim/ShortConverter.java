@@ -21,6 +21,32 @@ package com.blockwithme.prim;
  * to and from Java primitive short values.
  */
 public interface ShortConverter<E> extends Converter<E> {
+    /** The default bits. */
+    int DEFAULT_BITS = 16;
+
+    /** The default ShortConverter<E>. */
+    ShortConverter<Short> DEFAULT = new ShortConverter<Short>() {
+        @Override
+        public Class<Short> type() {
+            return Short.class;
+        }
+
+        @Override
+        public int bits() {
+            return DEFAULT_BITS;
+        }
+
+        @Override
+        public short fromObject(final Short obj) {
+            return (obj == null) ? 0 : obj;
+        }
+
+        @Override
+        public Short toObject(final short value) {
+            return value;
+        }
+    };
+
     /**
      * Converts from object instance.
      *

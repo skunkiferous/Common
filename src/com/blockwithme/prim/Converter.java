@@ -29,7 +29,9 @@ public interface Converter<E> {
 
     /**
      * Returns the number of bits required to store the object data.
+     *
      * Use the primitive type size, if unsure/variable.
+     * Use 0 or -1 if not a primitive type converter.
      */
     int bits();
 

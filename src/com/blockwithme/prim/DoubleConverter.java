@@ -21,6 +21,32 @@ package com.blockwithme.prim;
  * to and from Java primitive double values.
  */
 public interface DoubleConverter<E> extends Converter<E> {
+    /** The default bits. */
+    int DEFAULT_BITS = 64;
+
+    /** The default DoubleConverter<E>. */
+    DoubleConverter<Double> DEFAULT = new DoubleConverter<Double>() {
+        @Override
+        public Class<Double> type() {
+            return Double.class;
+        }
+
+        @Override
+        public int bits() {
+            return DEFAULT_BITS;
+        }
+
+        @Override
+        public double fromObject(final Double obj) {
+            return (obj == null) ? 0 : obj;
+        }
+
+        @Override
+        public Double toObject(final double value) {
+            return value;
+        }
+    };
+
     /**
      * Converts from object instance.
      *

@@ -21,6 +21,32 @@ package com.blockwithme.prim;
  * to and from Java primitive float values.
  */
 public interface FloatConverter<E> extends Converter<E> {
+    /** The default bits. */
+    int DEFAULT_BITS = 32;
+
+    /** The default FloatConverter<E>. */
+    FloatConverter<Float> DEFAULT = new FloatConverter<Float>() {
+        @Override
+        public Class<Float> type() {
+            return Float.class;
+        }
+
+        @Override
+        public int bits() {
+            return DEFAULT_BITS;
+        }
+
+        @Override
+        public float fromObject(final Float obj) {
+            return (obj == null) ? 0 : obj;
+        }
+
+        @Override
+        public Float toObject(final float value) {
+            return value;
+        }
+    };
+
     /**
      * Converts from object instance.
      *

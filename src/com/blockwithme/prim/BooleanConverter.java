@@ -21,6 +21,32 @@ package com.blockwithme.prim;
  * to and from Java primitive boolean values.
  */
 public interface BooleanConverter<E> extends Converter<E> {
+    /** The default bits. */
+    int DEFAULT_BITS = 1;
+
+    /** The default BooleanConverter<E>. */
+    BooleanConverter<Boolean> DEFAULT = new BooleanConverter<Boolean>() {
+        @Override
+        public Class<Boolean> type() {
+            return Boolean.class;
+        }
+
+        @Override
+        public int bits() {
+            return DEFAULT_BITS;
+        }
+
+        @Override
+        public boolean fromObject(final Boolean obj) {
+            return (obj == null) ? Boolean.FALSE : obj;
+        }
+
+        @Override
+        public Boolean toObject(final boolean value) {
+            return value;
+        }
+    };
+
     /**
      * Converts from object instance.
      *

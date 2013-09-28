@@ -21,6 +21,31 @@ package com.blockwithme.prim;
  * to and from Java primitive long values.
  */
 public interface LongConverter<E> extends Converter<E> {
+    /** The default bits. */
+    int DEFAULT_BITS = 64;
+
+    /** The default LongConverter<E>. */
+    LongConverter<Long> DEFAULT = new LongConverter<Long>() {
+        @Override
+        public Class<Long> type() {
+            return Long.class;
+        }
+
+        @Override
+        public int bits() {
+            return DEFAULT_BITS;
+        }
+
+        @Override
+        public long fromObject(final Long obj) {
+            return (obj == null) ? 0 : obj;
+        }
+
+        @Override
+        public Long toObject(final long value) {
+            return value;
+        }
+    };
 
     /**
     * Converts from object instance.
