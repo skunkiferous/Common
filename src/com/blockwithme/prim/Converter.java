@@ -15,10 +15,40 @@
  */
 package com.blockwithme.prim;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The Base Interface for all the converter interfaces.
  */
 public interface Converter<E> {
+
+    final class Helper {
+        private static Map<String, Converter<?>> init() {
+            final Map<String, Converter<?>> result = new HashMap<String, Converter<?>>();
+            result.put(BooleanConverter.DEFAULT.getClass().getName(),
+                    BooleanConverter.DEFAULT);
+            result.put(ByteConverter.DEFAULT.getClass().getName(),
+                    ByteConverter.DEFAULT);
+            result.put(CharConverter.DEFAULT.getClass().getName(),
+                    CharConverter.DEFAULT);
+            result.put(IntConverter.DEFAULT.getClass().getName(),
+                    IntConverter.DEFAULT);
+            result.put(LongConverter.DEFAULT.getClass().getName(),
+                    LongConverter.DEFAULT);
+            result.put(ShortConverter.DEFAULT.getClass().getName(),
+                    ShortConverter.DEFAULT);
+            result.put(FloatConverter.DEFAULT.getClass().getName(),
+                    FloatConverter.DEFAULT);
+            result.put(DoubleConverter.DEFAULT.getClass().getName(),
+                    DoubleConverter.DEFAULT);
+            return Collections.unmodifiableMap(result);
+        }
+    }
+
+    /** Maps class names of default converters to instances. */
+    Map<String, Converter<?>> DEFAULTS = Helper.init();
 
     /**
      * The type of Object being converted.

@@ -23,28 +23,34 @@ package com.blockwithme.prim;
  *
  * @param <E>
  */
-public class EnumByteConverter<E extends Enum<E>> implements ByteConverter<E> {
+public class EnumByteConverter<E extends Enum<E>> extends
+        ClassConfiguredConverter<E, E> implements ByteConverter<E> {
 
     /** The Enum constants. */
     private final E[] constants;
 
-    /** The enum type. */
-    private final Class<E> enumType;
+    /** Initialize */
+    private E[] init() {
+        if (!type.isEnum()) {
+            throw new IllegalArgumentException(type + " is not an Enum");
+        }
+        final E[] result = type.getEnumConstants();
+        if (result.length > 256) {
+            throw new IllegalArgumentException(type + " has too many constants");
+        }
+        return result;
+    }
 
     /** Constructor takes the enum type. */
     public EnumByteConverter(final Class<E> theEnumType) {
-        if (theEnumType == null) {
-            throw new IllegalArgumentException(theEnumType + " is null");
-        }
-        if (!theEnumType.isEnum()) {
-            throw new IllegalArgumentException(theEnumType + " is not an Enum");
-        }
-        constants = theEnumType.getEnumConstants();
-        enumType = theEnumType;
-        if (constants.length > 256) {
-            throw new IllegalArgumentException(enumType
-                    + " has too many constants");
-        }
+        super(theEnumType);
+        constants = init();
+    }
+
+    /** Constructor takes the enum type name. */
+    public EnumByteConverter(final String theEnumType) {
+        super(theEnumType);
+        constants = init();
     }
 
     @Override
@@ -56,12 +62,6 @@ public class EnumByteConverter<E extends Enum<E>> implements ByteConverter<E> {
     public E toObject(final byte value) {
         final int ordinal = value & 0xFF;
         return constants[ordinal];
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Class<E> type() {
-        return enumType;
     }
 
     /* (non-Javadoc)

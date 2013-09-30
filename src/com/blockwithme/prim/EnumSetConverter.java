@@ -25,29 +25,39 @@ import java.util.EnumSet;
  *
  * @param <E>
  */
-public class EnumSetConverter<E extends Enum<E>> implements
+public class EnumSetConverter<E extends Enum<E>> extends
+        ClassConfiguredConverter<EnumSet<E>, E> implements
         LongConverter<EnumSet<E>> {
 
     /** The Enum constants. */
-    private final E[] constants;
+    private E[] constants;
 
-    /** The enum type. */
-    private final Class<E> enumType;
+    /** Real type. */
+    private Class<EnumSet<E>> realType;
+
+    /** Initialize */
+    @SuppressWarnings("unchecked")
+    private void init() {
+        if (!type.isEnum()) {
+            throw new IllegalArgumentException(type + " is not an Enum");
+        }
+        constants = type.getEnumConstants();
+        if (constants.length > 64) {
+            throw new IllegalArgumentException(type + " has too many constants");
+        }
+        realType = (Class<EnumSet<E>>) EnumSet.noneOf(type).getClass();
+    }
 
     /** Constructor takes the enum type. */
     public EnumSetConverter(final Class<E> theEnumType) {
-        if (theEnumType == null) {
-            throw new IllegalArgumentException(theEnumType + " is null");
-        }
-        if (!theEnumType.isEnum()) {
-            throw new IllegalArgumentException(theEnumType + " is not an Enum");
-        }
-        constants = theEnumType.getEnumConstants();
-        enumType = theEnumType;
-        if (constants.length > 64) {
-            throw new IllegalArgumentException(enumType
-                    + " has too many constants");
-        }
+        super(theEnumType);
+        init();
+    }
+
+    /** Constructor takes the enum type name. */
+    public EnumSetConverter(final String theEnumType) {
+        super(theEnumType);
+        init();
     }
 
     @Override
@@ -64,7 +74,7 @@ public class EnumSetConverter<E extends Enum<E>> implements
 
     @Override
     public final EnumSet<E> toObject(final long theValue) {
-        final EnumSet<E> result = EnumSet.noneOf(enumType);
+        final EnumSet<E> result = EnumSet.noneOf(type);
         for (int i = 0; i < constants.length; i++) {
             if ((theValue & 1L << i) != 0) {
                 result.add(constants[i]);
@@ -74,10 +84,9 @@ public class EnumSetConverter<E extends Enum<E>> implements
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
     @Override
     public Class<EnumSet<E>> type() {
-        return (Class<EnumSet<E>>) EnumSet.noneOf(enumType).getClass();
+        return realType;
     }
 
     /* (non-Javadoc)

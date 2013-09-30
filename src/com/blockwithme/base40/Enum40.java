@@ -52,7 +52,6 @@ import com.blockwithme.util.Statics;
  *          // ...
  *      }
  *
- *      @Override
  *      protected void postInit(TestEnum40[] allSet) {
  *          // ...
  *          super.postInit(allSet);
@@ -110,13 +109,11 @@ import com.blockwithme.util.Statics;
  *          super(TestEnum40.class, base40);
  *      }
  *
- *	@Override
  *      protected void postInit(TestEnum40[] allSet) {
  *          // ...
  *          super.postInit(allSet);
  *      }
  *
- *      @Override
  *      protected TestEnum40 newInstance(final long base40) {
  *          return new TestEnum40(base40);
  *      }

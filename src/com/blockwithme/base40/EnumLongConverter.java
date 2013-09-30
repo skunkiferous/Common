@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.blockwithme.prim.ClassConfiguredConverter;
 import com.blockwithme.prim.LongConverter;
 
 /**
@@ -29,33 +30,25 @@ import com.blockwithme.prim.LongConverter;
  *
  * @param <E>
  */
-public class EnumLongConverter<E extends Enum<E>> implements LongConverter<E> {
-
-    /** The enum type. */
-    private final Class<E> enumType;
+public class EnumLongConverter<E extends Enum<E>> extends
+        ClassConfiguredConverter<E, E> implements LongConverter<E> {
 
     /** The Long to Enum map. */
-    private final Map<Long, E> mapLongToEnum;
+    private final Map<Long, E> mapLongToEnum = new HashMap<>();
 
     /** The Enum to Long map. */
-    private final Map<E, Long> mapEnumToLong;
+    private final Map<E, Long> mapEnumToLong = new HashMap<>();
 
     /** The character set. */
     private final CharacterSet characterSet = Enum40.getDefaultCharacterSet();
 
-    /** Constructor takes the enum type. */
-    public EnumLongConverter(final Class<E> theEnumType) {
-        if (theEnumType == null) {
-            throw new IllegalArgumentException(theEnumType + " is null");
+    /** Initialize the maps. */
+    private void init() {
+        if (!type.isEnum()) {
+            throw new IllegalArgumentException(type + " is not an Enum");
         }
-        if (!theEnumType.isEnum()) {
-            throw new IllegalArgumentException(theEnumType + " is not an Enum");
-        }
-        enumType = theEnumType;
-        final E[] constants = theEnumType.getEnumConstants();
+        final E[] constants = type.getEnumConstants();
         final long[] longs = new long[constants.length];
-        mapLongToEnum = new HashMap<>();
-        mapEnumToLong = new HashMap<>();
         for (int i = 0; i < constants.length; i++) {
             final E e = constants[i];
             @SuppressWarnings("boxing")
@@ -69,11 +62,23 @@ public class EnumLongConverter<E extends Enum<E>> implements LongConverter<E> {
             final long l = longs[i];
             if (l == last) {
                 throw new IllegalArgumentException(
-                        theEnumType
+                        type
                                 + " has multiple constants that map to the same base40 values");
             }
             last = l;
         }
+    }
+
+    /** Constructor takes the enum type name. */
+    public EnumLongConverter(final String theEnumType) {
+        super(theEnumType);
+        init();
+    }
+
+    /** Constructor takes the enum type. */
+    public EnumLongConverter(final Class<E> theEnumType) {
+        super(theEnumType);
+        init();
     }
 
     /** {@inheritDoc} */
@@ -88,12 +93,6 @@ public class EnumLongConverter<E extends Enum<E>> implements LongConverter<E> {
     @Override
     public E toObject(final long value) {
         return mapLongToEnum.get(value);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Class<E> type() {
-        return enumType;
     }
 
     /* (non-Javadoc)

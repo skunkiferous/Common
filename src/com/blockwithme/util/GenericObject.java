@@ -277,7 +277,7 @@ public class GenericObject {
     /**
      * Sets the data array index.
      *
-     * @param newObjectIndex the new object array index. Not validation performed!
+     * @param newDataIndex the new object array index. Not validation performed!
      */
     public final GenericObject setDataIndex(final int newDataIndex) {
         dataIndex = newDataIndex;

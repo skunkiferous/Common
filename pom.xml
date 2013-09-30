@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.blockwithme</groupId>
 	<artifactId>Common</artifactId>
-	<version>0.0.11</version>
+	<version>0.0.13</version>
 	<packaging>bundle</packaging>
 	<name>Common</name>
 	<description>Common functionality, shared by most on BlockWithMe projects.</description>
