@@ -1,3 +1,8 @@
+WARNING:
+This project has been superseded by Util, which is GWT-compatible:
+@see https://github.com/skunkiferous/Util
+
+
 This project unites several utility projects together:
 
 Common
